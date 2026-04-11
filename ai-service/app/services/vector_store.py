@@ -10,70 +10,72 @@ class VectorStore:
     def __init__(self, dimension: int = 512, index_dir: str = "models"):
         self.dimension = dimension
         self.index_dir = index_dir
-        self.index_path = os.path.join(index_dir, "grabpic_faces.index")
-        self.index = None
 
         if not os.path.exists(self.index_dir):
             os.makedirs(self.index_dir)
 
-        self._load_or_create_index()
-
-    def _load_or_create_index(self):
-        if os.path.exists(self.index_path):
+        self.user_index_path = os.path.join(index_dir, "users_master.index")
+        self.user_index = self._load_or_create(self.user_index_path)
+    
+    def _load_or_create(self, path):
+        if os.path.exists(path):
             try:
-                self.index = faiss.read_index(self.index_path)
-                logger.info(f"Successfully read existing Index")
+                index = faiss.read_index(path)
+                logger.info(f"Loaded existing index: {path}")
+                return index
             except Exception as e:
-                logger.error("Something went wrong while reading the index. Creating a new one")
-                self._create_new_index()
-        else:
-            self._create_new_index()
-
-    def _create_new_index(self):
+                logger.error(f"Failed to read index {path}: {e}")
+        
+        # Create new IDMap index
         sub_index = faiss.IndexFlatL2(self.dimension)
-        self.index = faiss.IndexIDMap(sub_index)
-        logger.info("Created a new FAISS Index")
+        logger.info(f"Created new FAISS index for: {path}")
+        return faiss.IndexIDMap(sub_index)
+    
+    def get_event_index(self, event_id: str):
+        event_path = os.path.join(self.index_dir, f"event_{event_id}.index")
+        return self._load_or_create(event_path), event_path
 
-    def add_vector(self, embedding: list, face_id: int):
+    def add_to_index(self, index, path, embedding: list, internal_id: int):
+        """Generic add function for any index"""
         try:
             vector = np.array([embedding]).astype("float32")
-            ids = np.array([face_id]).astype("int64")
-
-            self.index.add_with_ids(vector, ids)
-            self.save_index()
-            logger.info(f"Added vector with ID {face_id}. Total: {self.index.ntotal}")
+            ids = np.array([internal_id]).astype("int64")
+            index.add_with_ids(vector, ids)
+            faiss.write_index(index, path)
+            logger.info(f"Added ID {internal_id} to {path}. Total: {index.ntotal}")
         except Exception as e:
-            logger.error("Something went wrong wile adding vector to index: ", e)
+            logger.error(f"Error adding to index {path}: {e}")
             raise e
-        
-    def delete_vector(self, face_id: int):
-        ids_to_remove = np.array([face_id]).astype("int64")
-        self.index.remove_ids(ids_to_remove)
-        self.save_index()
-        logger.info(f"Deleted vector ID {face_id}.")
-
-    def search(self, query_embedding: list, top_k: int = 5):
-        """Finds the closest match to a given face"""
-        if self.index.ntotal == 0:
+    
+    def search_index(self, index, query_embedding: list, top_k: int = 10):
+        """Generic search function for any index"""
+        if index.ntotal == 0:
             return [], []
-        
         vector = np.array([query_embedding]).astype("float32")
-        distances, indices = self.index.search(vector, top_k)
-
+        distances, indices = index.search(vector, top_k)
         return distances[0].tolist(), indices[0].tolist()
     
-    def get_vector_by_id(self, face_id: int):
-        """Retreives the embedding vector by taking in the unique face id"""
+    def get_user_embedding(self, face_id: int):
+        """Get the master embedding for a registered user"""
         try:
-            return self.index.reconstruct(face_id)
+            # Fast path for index types that support reconstruct by external ID.
+            try:
+                return self.user_index.reconstruct(face_id)
+            except Exception:
+                pass
+
+            # Fallback for IndexIDMap: resolve external ID -> internal position.
+            if not hasattr(self.user_index, "id_map"):
+                return None
+
+            id_map = faiss.vector_to_array(self.user_index.id_map)
+            positions = np.where(id_map == int(face_id))[0]
+            if positions.size == 0:
+                return None
+
+            # If duplicate face_id entries exist, use the most recently added one.
+            pos = int(positions[-1])
+            return self.user_index.index.reconstruct(pos)
         except Exception as e:
-            logger.error(f"ID {face_id} not found in FAISS index: {e}")
+            logger.error(f"User ID {face_id} not found: {e}")
             return None
-
-    def save_index(self):
-        try:
-            faiss.write_index(self.index, self.index_path)
-        except Exception as e:
-            logger.error("Could not save index")
-
-vector_store = VectorStore()

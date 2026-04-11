@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 from insightface.app import FaceAnalysis
 from app.schema.schemas import AIProcessingResult, FaceMetaData
-import httpx
 
 class AIEngine:
     def __init__(self):
@@ -15,21 +14,14 @@ class AIEngine:
     def _get_blur_score(self, img_gray):
         return cv2.Laplacian(img_gray, cv2.CV_64F).var()
     
-    async def download_image(url: str) -> bytes:
-        async with httpx.AsyncClient() as client:
-            response = await client.get(url)
 
-            if response.status_code == 200:
-                return response.content
-            
-            raise Exception("Failed to download image with url: ", url)
     
     def process_media(self, image_bytes: bytes) -> AIProcessingResult:
         nparr = np.frombuffer(image_bytes, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
         if img is None:
-            return AIProcessingResult(face_count=0, face=[], embeddings=[])
+            return AIProcessingResult(face_count=0, faces=[], embeddings=[])
         
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         lighting = self._get_lighting_level(img_gray)
@@ -59,5 +51,3 @@ class AIEngine:
             faces=results, 
             embeddings=embeddings
         )
-    
-engine = AIEngine()
