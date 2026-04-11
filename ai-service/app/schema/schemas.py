@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, HttpUrl
 from typing import List, Optional
 
 class FaceMetaData(BaseModel):
@@ -22,3 +22,36 @@ class RegistrationResponse(BaseModel):
     message: str 
     status: str 
     quality_score: float
+
+class DetectedFace(BaseModel):
+    face_id: Optional[int] = None
+    distance: float
+    box: List[float]
+    matched: bool
+
+class IndexRequest(BaseModel):
+    image_url: HttpUrl
+    event_id: str
+
+class DetectionResult(BaseModel):
+    detection_id: int
+    box: List[float]
+
+class IndexResponse(BaseModel):
+    event_id: str
+    image_url: str
+    detections: List[DetectionResult]
+
+class FindUserRequest(BaseModel):
+    face_id: int
+    event_id: str
+    threshold: float = 0.8
+
+class MatchResult(BaseModel):
+    detection_id: int
+    distance: float
+
+class FindUserResponse(BaseModel):
+    face_id: int
+    event_id: str
+    matches: List[MatchResult]

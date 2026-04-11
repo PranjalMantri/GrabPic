@@ -34,7 +34,16 @@ async def register_face(
         raise HTTPException(status_code=400, detail="Image is blurry. Please use a steady camera")
     
     target_embedding = results.embeddings[0]
-    vector_store.add_vector(target_embedding, face_id)
+
+    try:
+        vector_store.add_to_index(
+            vector_store.user_index,
+            vector_store.user_index_path,
+            target_embedding,
+            face_id,
+        )
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to store face embedding")
 
     return {
         "face_id": face_id,
