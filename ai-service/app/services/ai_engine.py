@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from insightface.app import FaceAnalysis
-from schema.schemas import AIProcessingResult, FaceMetaData
+from app.schema.schemas import AIProcessingResult, FaceMetaData
 import httpx
 
 class AIEngine:
@@ -43,7 +43,7 @@ class AIEngine:
         for face in faces:
             # create meta data for each face found in the image
             meta = FaceMetaData(
-                box=face.bbox.toList(),
+                box=face.bbox.tolist(),
                 score=float(face.det_score),
                 age=int(face.age) if hasattr(face, "age") else None,
                 gender="M" if face.gender == 1 else "F",
@@ -52,7 +52,7 @@ class AIEngine:
             )
 
             results.append(meta)
-            embeddings.append(face.normed_embedding.toList())
+            embeddings.append(face.normed_embedding.tolist())
 
         return AIProcessingResult(
             face_count=len(faces), 

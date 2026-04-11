@@ -27,7 +27,7 @@ class VectorStore:
                 logger.error("Something went wrong while reading the index. Creating a new one")
                 self._create_new_index()
         else:
-            self._craete_new_index()
+            self._create_new_index()
 
     def _create_new_index(self):
         sub_index = faiss.IndexFlatL2(self.dimension)
@@ -60,7 +60,7 @@ class VectorStore:
         vector = np.array([query_embedding]).astype("float32")
         distances, indices = self.index.search(vector, top_k)
 
-        return distances[0].toList(), indices[0].toList()
+        return distances[0].tolist(), indices[0].tolist()
     
     def get_vector_by_id(self, face_id: int):
         """Retreives the embedding vector by taking in the unique face id"""
