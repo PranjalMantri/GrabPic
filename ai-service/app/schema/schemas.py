@@ -16,3 +16,9 @@ class AIProcessingResult(BaseModel):
     face_count: int
     faces: List[FaceMetaData]
     embeddings: List[List[float]] = Field(..., description="List of 512-D vectors")
+
+class RegistrationResponse(BaseModel):
+    face_id: int
+    message: str 
+    status: str 
+    quality_score: float
