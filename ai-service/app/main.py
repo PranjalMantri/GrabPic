@@ -1,10 +1,25 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 import uvicorn
 from app.routes.registration import router as registration_router
-from app.routes.processing import router as processing_router
+from app.routes.processing import (
+    router as processing_router,
+    start_processing_worker,
+    stop_processing_worker,
+)
 
-app = FastAPI(title="GrabPic AI Service")
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    await start_processing_worker()
+    try:
+        yield
+    finally:
+        await stop_processing_worker()
+
+
+app = FastAPI(title="GrabPic AI Service", lifespan=lifespan)
 
 app.add_middleware(CORSMiddleware, 
                     allow_origins=["http://localhost:3000"], 

@@ -32,24 +32,41 @@ class DetectedFace(BaseModel):
 class IndexRequest(BaseModel):
     image_url: HttpUrl
     event_id: str
+    callback_url: HttpUrl
 
 class VideoIndexRequest(BaseModel):
-    video_url: str
+    video_url: HttpUrl
     event_id: str
+    callback_url: HttpUrl
 
 class DetectionResult(BaseModel):
     detection_id: int
     box: List[float]
 
 class IndexResponse(BaseModel):
+    job_id: str
     event_id: str
-    image_url: str
-    detections: List[DetectionResult]
+    media_type: str
+    status: str
+    message: str
+    queue_size: int
 
 class VideoIndexResponse(BaseModel):
+    job_id: str
     event_id: str
-    video_url: str
+    media_type: str
+    status: str
+    message: str
+    queue_size: int
+
+class ProcessingCallbackPayload(BaseModel):
+    job_id: str
+    event_id: str
+    media_type: str
+    source_url: str
+    status: str
     detections: List[DetectionResult]
+    error: Optional[str] = None
 
 class FindUserRequest(BaseModel):
     face_id: int
