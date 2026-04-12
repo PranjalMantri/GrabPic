@@ -33,6 +33,10 @@ class IndexRequest(BaseModel):
     image_url: HttpUrl
     event_id: str
 
+class VideoIndexRequest(BaseModel):
+    video_url: str
+    event_id: str
+
 class DetectionResult(BaseModel):
     detection_id: int
     box: List[float]
@@ -40,6 +44,11 @@ class DetectionResult(BaseModel):
 class IndexResponse(BaseModel):
     event_id: str
     image_url: str
+    detections: List[DetectionResult]
+
+class VideoIndexResponse(BaseModel):
+    event_id: str
+    video_url: str
     detections: List[DetectionResult]
 
 class FindUserRequest(BaseModel):
