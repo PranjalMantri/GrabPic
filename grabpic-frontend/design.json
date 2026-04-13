@@ -1,0 +1,646 @@
+{
+  "meta": {
+    "product": "GrabPic",
+    "description": "AI-powered event photo platform — complete design token system extracted from UI screens",
+    "screens": [
+      "Landing Page",
+      "Sign In",
+      "Face Registration (Onboarding)",
+      "Events Dashboard",
+      "Event Gallery / Upload",
+      "AI Gallery Results",
+      "Account Settings"
+    ]
+  },
+
+  "colors": {
+    "brand": {
+      "primary": "#5B4FE8",
+      "primaryDark": "#4A3FD6",
+      "primaryLight": "#7B70F0",
+      "primarySubtle": "#EEF0FD"
+    },
+    "background": {
+      "base": "#F4F5F7",
+      "surface": "#FFFFFF",
+      "surfaceElevated": "#FFFFFF",
+      "overlay": "rgba(0, 0, 0, 0.04)",
+      "dark": "#1A1A2E",
+      "darkCard": "#16213E"
+    },
+    "text": {
+      "primary": "#0F0F1A",
+      "secondary": "#4A4A5A",
+      "tertiary": "#8A8A9A",
+      "disabled": "#BBBBC8",
+      "onDark": "#FFFFFF",
+      "onPrimary": "#FFFFFF",
+      "link": "#5B4FE8"
+    },
+    "border": {
+      "default": "#E4E4EC",
+      "subtle": "#EDEDF5",
+      "focus": "#5B4FE8"
+    },
+    "status": {
+      "success": "#22C55E",
+      "successLight": "#DCFCE7",
+      "warning": "#F59E0B",
+      "warningLight": "#FEF3C7",
+      "error": "#EF4444",
+      "errorLight": "#FEE2E2",
+      "info": "#3B82F6",
+      "infoLight": "#DBEAFE"
+    },
+    "badge": {
+      "aiCurated": "#5B4FE8",
+      "aiCuratedText": "#FFFFFF",
+      "processing": "#1A1A2E",
+      "processingText": "#FFFFFF",
+      "liveEvent": "#EEF0FD",
+      "liveEventText": "#5B4FE8",
+      "newFeature": "#FEF3C7",
+      "newFeatureText": "#B45309",
+      "aiRecognitionActive": "#FFF7ED",
+      "aiRecognitionActiveText": "#C2410C"
+    },
+    "sidebar": {
+      "background": "#FFFFFF",
+      "activeItemBackground": "#EEF0FD",
+      "activeItemText": "#5B4FE8",
+      "inactiveItemText": "#4A4A5A",
+      "border": "#E4E4EC"
+    }
+  },
+
+  "typography": {
+    "fontFamilies": {
+      "display": "'Inter', sans-serif",
+      "body": "'Inter', sans-serif",
+      "mono": "'JetBrains Mono', 'Fira Code', monospace",
+      "note": "The design uses a clean geometric sans-serif throughout — visually consistent with Inter or a very close humanist sans. No serif fonts detected."
+    },
+    "fontWeights": {
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700,
+      "extrabold": 800
+    },
+    "scale": {
+      "hero": {
+        "fontSize": "48px",
+        "lineHeight": "1.1",
+        "fontWeight": 800,
+        "letterSpacing": "-0.02em",
+        "usage": "Landing page H1"
+      },
+      "h1": {
+        "fontSize": "36px",
+        "lineHeight": "1.2",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "usage": "Page-level headings (Welcome back, Account Profile)"
+      },
+      "h2": {
+        "fontSize": "28px",
+        "lineHeight": "1.25",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "usage": "Section headings (Engineered for Moments, Magic Face Recognition)"
+      },
+      "h3": {
+        "fontSize": "20px",
+        "lineHeight": "1.3",
+        "fontWeight": 600,
+        "letterSpacing": "-0.005em",
+        "usage": "Card titles, modal headings (Face Registration, AI Insights)"
+      },
+      "h4": {
+        "fontSize": "16px",
+        "lineHeight": "1.4",
+        "fontWeight": 600,
+        "usage": "Feature titles, sidebar labels"
+      },
+      "bodyLg": {
+        "fontSize": "16px",
+        "lineHeight": "1.6",
+        "fontWeight": 400,
+        "usage": "Hero sub-copy, card descriptions"
+      },
+      "body": {
+        "fontSize": "14px",
+        "lineHeight": "1.6",
+        "fontWeight": 400,
+        "usage": "Primary body text, form labels"
+      },
+      "bodySm": {
+        "fontSize": "13px",
+        "lineHeight": "1.5",
+        "fontWeight": 400,
+        "usage": "Secondary descriptors, helper text"
+      },
+      "caption": {
+        "fontSize": "12px",
+        "lineHeight": "1.4",
+        "fontWeight": 500,
+        "letterSpacing": "0.04em",
+        "textTransform": "uppercase",
+        "usage": "Form field labels (EMAIL ADDRESS, PASSWORD), badge text"
+      },
+      "micro": {
+        "fontSize": "11px",
+        "lineHeight": "1.4",
+        "fontWeight": 500,
+        "letterSpacing": "0.06em",
+        "textTransform": "uppercase",
+        "usage": "Footer labels, metadata (PHOTOS count, JOINED BY ...)"
+      }
+    },
+    "specialStyles": {
+      "heroAccent": {
+        "color": "#5B4FE8",
+        "fontWeight": 800,
+        "usage": "Highlighted word in landing hero (instantly)"
+      },
+      "navLink": {
+        "fontSize": "14px",
+        "fontWeight": 500,
+        "color": "#4A4A5A"
+      },
+      "photoCount": {
+        "fontSize": "16px",
+        "fontWeight": 700,
+        "color": "#0F0F1A"
+      }
+    }
+  },
+
+  "spacing": {
+    "base": "4px",
+    "scale": {
+      "1": "4px",
+      "2": "8px",
+      "3": "12px",
+      "4": "16px",
+      "5": "20px",
+      "6": "24px",
+      "8": "32px",
+      "10": "40px",
+      "12": "48px",
+      "16": "64px",
+      "20": "80px",
+      "24": "96px"
+    },
+    "layout": {
+      "sidebarWidth": "188px",
+      "contentPaddingX": "32px",
+      "contentPaddingY": "24px",
+      "sectionGap": "48px",
+      "cardGap": "16px",
+      "formFieldGap": "20px"
+    }
+  },
+
+  "borderRadius": {
+    "none": "0px",
+    "sm": "6px",
+    "md": "10px",
+    "lg": "14px",
+    "xl": "20px",
+    "2xl": "24px",
+    "pill": "9999px",
+    "usage": {
+      "buttons": "10px (primary), 8px (secondary)",
+      "inputs": "10px",
+      "cards": "14px–20px",
+      "badges": "6px (chip), 9999px (pill)",
+      "modal": "20px",
+      "images": "14px",
+      "sidebar": "10px (active item)"
+    }
+  },
+
+  "shadows": {
+    "sm": "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
+    "md": "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)",
+    "lg": "0 8px 32px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.06)",
+    "xl": "0 20px 60px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.06)",
+    "card": "0 2px 8px rgba(0,0,0,0.06)",
+    "modal": "0 20px 60px rgba(0,0,0,0.15)",
+    "primaryGlow": "0 4px 20px rgba(91,79,232,0.35)",
+    "usage": {
+      "featureCard": "md",
+      "signInCard": "xl",
+      "primaryButton": "primaryGlow"
+    }
+  },
+
+  "components": {
+    "button": {
+      "primary": {
+        "background": "#5B4FE8",
+        "color": "#FFFFFF",
+        "borderRadius": "10px",
+        "paddingX": "24px",
+        "paddingY": "14px",
+        "fontSize": "15px",
+        "fontWeight": 600,
+        "boxShadow": "0 4px 20px rgba(91,79,232,0.35)",
+        "hover": {
+          "background": "#4A3FD6",
+          "boxShadow": "0 6px 24px rgba(91,79,232,0.45)"
+        }
+      },
+      "secondary": {
+        "background": "#FFFFFF",
+        "color": "#0F0F1A",
+        "border": "1px solid #E4E4EC",
+        "borderRadius": "10px",
+        "paddingX": "20px",
+        "paddingY": "12px",
+        "fontSize": "14px",
+        "fontWeight": 500,
+        "hover": {
+          "background": "#F4F5F7"
+        }
+      },
+      "ghost": {
+        "background": "transparent",
+        "color": "#4A4A5A",
+        "borderRadius": "8px",
+        "paddingX": "16px",
+        "paddingY": "10px",
+        "fontSize": "14px",
+        "fontWeight": 500,
+        "hover": {
+          "background": "#F4F5F7"
+        }
+      },
+      "iconButton": {
+        "size": "36px",
+        "borderRadius": "8px",
+        "background": "transparent",
+        "hover": {
+          "background": "#F4F5F7"
+        }
+      },
+      "fullWidth": {
+        "extends": "primary",
+        "width": "100%",
+        "borderRadius": "12px",
+        "paddingY": "16px",
+        "fontSize": "16px"
+      }
+    },
+
+    "input": {
+      "background": "#F4F5F7",
+      "border": "1px solid transparent",
+      "borderRadius": "10px",
+      "paddingX": "16px",
+      "paddingY": "14px",
+      "fontSize": "15px",
+      "color": "#0F0F1A",
+      "placeholderColor": "#8A8A9A",
+      "iconColor": "#8A8A9A",
+      "focus": {
+        "border": "1px solid #5B4FE8",
+        "background": "#FFFFFF",
+        "outline": "none"
+      },
+      "labelStyle": {
+        "fontSize": "12px",
+        "fontWeight": 600,
+        "letterSpacing": "0.05em",
+        "textTransform": "uppercase",
+        "color": "#8A8A9A",
+        "marginBottom": "8px"
+      }
+    },
+
+    "card": {
+      "default": {
+        "background": "#FFFFFF",
+        "borderRadius": "16px",
+        "padding": "24px",
+        "boxShadow": "0 2px 8px rgba(0,0,0,0.06)",
+        "border": "1px solid #E4E4EC"
+      },
+      "feature": {
+        "extends": "default",
+        "padding": "28px",
+        "borderRadius": "20px"
+      },
+      "eventThumbnail": {
+        "borderRadius": "14px",
+        "overflow": "hidden",
+        "aspectRatio": "16/10"
+      },
+      "aiHighlight": {
+        "background": "#EEF0FD",
+        "borderRadius": "16px",
+        "border": "none",
+        "padding": "28px 32px"
+      },
+      "proTip": {
+        "background": "#FEF3C7",
+        "borderRadius": "12px",
+        "padding": "16px",
+        "border": "none"
+      }
+    },
+
+    "badge": {
+      "default": {
+        "fontSize": "11px",
+        "fontWeight": 600,
+        "letterSpacing": "0.04em",
+        "textTransform": "uppercase",
+        "paddingX": "8px",
+        "paddingY": "4px",
+        "borderRadius": "6px"
+      },
+      "pill": {
+        "fontSize": "12px",
+        "fontWeight": 500,
+        "paddingX": "12px",
+        "paddingY": "5px",
+        "borderRadius": "9999px"
+      }
+    },
+
+    "sidebar": {
+      "width": "188px",
+      "background": "#FFFFFF",
+      "borderRight": "1px solid #E4E4EC",
+      "padding": "20px 12px",
+      "logo": {
+        "iconSize": "32px",
+        "iconBackground": "#5B4FE8",
+        "iconBorderRadius": "8px",
+        "titleFontSize": "15px",
+        "titleFontWeight": 700,
+        "subtitleFontSize": "11px",
+        "subtitleColor": "#8A8A9A"
+      },
+      "navItem": {
+        "paddingX": "12px",
+        "paddingY": "10px",
+        "borderRadius": "10px",
+        "fontSize": "14px",
+        "fontWeight": 500,
+        "iconSize": "18px",
+        "gap": "10px",
+        "active": {
+          "background": "#EEF0FD",
+          "color": "#5B4FE8",
+          "fontWeight": 600
+        },
+        "inactive": {
+          "color": "#4A4A5A",
+          "hover": { "background": "#F4F5F7" }
+        }
+      },
+      "storageWidget": {
+        "background": "#EEF0FD",
+        "borderRadius": "12px",
+        "padding": "16px",
+        "progressBarColor": "#5B4FE8",
+        "progressBarBackground": "#C7C3F7",
+        "progressBarHeight": "4px",
+        "progressBarRadius": "2px"
+      }
+    },
+
+    "navbar": {
+      "height": "56px",
+      "background": "#FFFFFF",
+      "borderBottom": "1px solid #E4E4EC",
+      "paddingX": "24px",
+      "logoFontSize": "16px",
+      "logoFontWeight": 700,
+      "linkFontSize": "14px",
+      "linkFontWeight": 500
+    },
+
+    "avatar": {
+      "sm": { "size": "28px", "borderRadius": "50%" },
+      "md": { "size": "36px", "borderRadius": "50%" },
+      "lg": { "size": "48px", "borderRadius": "50%" },
+      "xl": { "size": "96px", "borderRadius": "50%", "border": "3px solid #FFFFFF" },
+      "group": {
+        "overlap": "-8px",
+        "borderWidth": "2px",
+        "borderColor": "#FFFFFF"
+      }
+    },
+
+    "modal": {
+      "background": "#FFFFFF",
+      "borderRadius": "20px",
+      "padding": "40px",
+      "maxWidth": "480px",
+      "backdrop": "rgba(0,0,0,0.4)",
+      "closeButton": {
+        "position": "absolute",
+        "top": "20px",
+        "right": "20px",
+        "size": "32px",
+        "borderRadius": "50%",
+        "background": "transparent",
+        "color": "#4A4A5A"
+      }
+    },
+
+    "progressStepper": {
+      "activeColor": "#5B4FE8",
+      "inactiveColor": "#E4E4EC",
+      "height": "3px",
+      "borderRadius": "2px",
+      "gap": "6px"
+    },
+
+    "dropzone": {
+      "background": "#FFFFFF",
+      "border": "1.5px dashed #C7C3F7",
+      "borderRadius": "16px",
+      "padding": "40px",
+      "iconColor": "#5B4FE8",
+      "iconBackground": "#EEF0FD",
+      "iconSize": "48px",
+      "textColor": "#0F0F1A",
+      "subtextColor": "#8A8A9A"
+    },
+
+    "tabBar": {
+      "background": "#F4F5F7",
+      "borderRadius": "10px",
+      "padding": "4px",
+      "tabPaddingX": "16px",
+      "tabPaddingY": "8px",
+      "tabFontSize": "14px",
+      "tabFontWeight": 500,
+      "activeTab": {
+        "background": "#FFFFFF",
+        "color": "#0F0F1A",
+        "borderRadius": "8px",
+        "boxShadow": "0 1px 4px rgba(0,0,0,0.08)"
+      },
+      "inactiveTab": {
+        "color": "#8A8A9A"
+      }
+    },
+
+    "divider": {
+      "color": "#E4E4EC",
+      "thickness": "1px",
+      "withLabel": {
+        "labelFontSize": "12px",
+        "labelColor": "#8A8A9A",
+        "labelFontWeight": 500,
+        "letterSpacing": "0.05em",
+        "textTransform": "uppercase"
+      }
+    },
+
+    "photoGrid": {
+      "columns": 3,
+      "gap": "12px",
+      "imageRadius": "12px",
+      "aspect": "auto",
+      "overlay": {
+        "background": "linear-gradient(to top, rgba(0,0,0,0.5), transparent)",
+        "showOnHover": true
+      }
+    },
+
+    "aiInsightPanel": {
+      "background": "#FFFFFF",
+      "borderRadius": "16px",
+      "padding": "20px",
+      "iconColor": "#5B4FE8",
+      "checkIconColor": "#5B4FE8",
+      "curationScore": {
+        "barColor": "#5B4FE8",
+        "barBackground": "#E4E4EC",
+        "barHeight": "6px",
+        "barRadius": "3px",
+        "valueFontSize": "15px",
+        "valueFontWeight": 700,
+        "valueColor": "#5B4FE8"
+      }
+    }
+  },
+
+  "iconography": {
+    "library": "Lucide / Heroicons style — outlined, 1.5px stroke",
+    "sizes": {
+      "sm": "16px",
+      "md": "20px",
+      "lg": "24px"
+    },
+    "color": "inherits from parent or #4A4A5A",
+    "brandIcon": {
+      "shape": "Rounded square",
+      "background": "#5B4FE8",
+      "color": "#FFFFFF",
+      "icon": "Sparkle / four-pointed star",
+      "borderRadius": "10px",
+      "size": "36px (nav) / 48px (auth page)"
+    }
+  },
+
+  "motion": {
+    "easing": {
+      "default": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "enter": "cubic-bezier(0, 0, 0.2, 1)",
+      "exit": "cubic-bezier(0.4, 0, 1, 1)"
+    },
+    "duration": {
+      "fast": "120ms",
+      "normal": "200ms",
+      "slow": "300ms",
+      "verySlow": "500ms"
+    },
+    "transitions": {
+      "button": "background 200ms, box-shadow 200ms, transform 120ms",
+      "input": "border-color 150ms, background 150ms",
+      "card": "box-shadow 200ms, transform 200ms",
+      "navItem": "background 150ms, color 150ms"
+    }
+  },
+
+  "breakpoints": {
+    "mobile": "375px",
+    "tablet": "768px",
+    "desktop": "1024px",
+    "wide": "1280px"
+  },
+
+  "layout": {
+    "maxContentWidth": "1200px",
+    "dashboardLayout": {
+      "type": "sidebar + content",
+      "sidebarWidth": "188px",
+      "contentArea": "calc(100vw - 188px)",
+      "headerHeight": "56px"
+    },
+    "landingLayout": {
+      "type": "full-width with centered sections",
+      "heroLayout": "2-column (text left, image/demo right)",
+      "featureGrid": "2-column alternating",
+      "footerColumns": 4
+    },
+    "authLayout": {
+      "type": "centered card on gradient background",
+      "cardMaxWidth": "480px"
+    }
+  },
+
+  "effects": {
+    "backgroundGradients": {
+      "pageBase": "linear-gradient(135deg, #F0F1FA 0%, #F8F8FC 50%, #EEF0FD 100%)",
+      "authPage": "radial-gradient(ellipse at 30% 20%, #E8E6FC 0%, #F4F5F7 50%, #F0EFF8 100%)",
+      "darkHero": "linear-gradient(135deg, #1A1A2E 0%, #16213E 100%)",
+      "primaryButton": "linear-gradient(135deg, #6B5FEF 0%, #5B4FE8 100%)"
+    },
+    "imageOverlays": {
+      "cardHover": "linear-gradient(to top, rgba(0,0,0,0.55), transparent 60%)",
+      "darkCard": "linear-gradient(135deg, rgba(26,26,46,0.95) 0%, rgba(22,33,62,0.90) 100%)"
+    },
+    "glassEffect": {
+      "background": "rgba(255,255,255,0.85)",
+      "backdropFilter": "blur(12px)",
+      "border": "1px solid rgba(255,255,255,0.6)"
+    }
+  },
+
+  "tokens": {
+    "note": "CSS custom property names for use in stylesheets",
+    "--color-primary": "#5B4FE8",
+    "--color-primary-dark": "#4A3FD6",
+    "--color-primary-light": "#7B70F0",
+    "--color-primary-subtle": "#EEF0FD",
+    "--color-bg-base": "#F4F5F7",
+    "--color-bg-surface": "#FFFFFF",
+    "--color-text-primary": "#0F0F1A",
+    "--color-text-secondary": "#4A4A5A",
+    "--color-text-tertiary": "#8A8A9A",
+    "--color-border": "#E4E4EC",
+    "--color-border-subtle": "#EDEDF5",
+    "--font-sans": "'Inter', sans-serif",
+    "--radius-sm": "6px",
+    "--radius-md": "10px",
+    "--radius-lg": "14px",
+    "--radius-xl": "20px",
+    "--radius-pill": "9999px",
+    "--shadow-card": "0 2px 8px rgba(0,0,0,0.06)",
+    "--shadow-modal": "0 20px 60px rgba(0,0,0,0.15)",
+    "--shadow-primary": "0 4px 20px rgba(91,79,232,0.35)",
+    "--transition-fast": "150ms cubic-bezier(0.4, 0, 0.2, 1)",
+    "--transition-normal": "200ms cubic-bezier(0.4, 0, 0.2, 1)",
+    "--sidebar-width": "188px",
+    "--header-height": "56px"
+  }
+}
