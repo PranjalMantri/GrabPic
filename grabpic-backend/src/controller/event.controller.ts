@@ -131,11 +131,11 @@ export const deleteEvent = async (req: AuthRequest, res: Response) => {
 export const uploadEventMedia = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const event = await Event.findOne({ _id: id, owner: req.user._id });
+    const event = await Event.findOne({ _id: id, participants: req.user._id });
 
     if (!event) {
-      console.warn(`[UploadEventMedia] Event ${id} not found or unauthorized access by user ${req.user._id}`);
-      return res.status(404).json({ message: 'Event not found or you are not the owner' });
+      console.warn(`[UploadEventMedia] Event ${id} not found or user ${req.user._id} is not a participant`);
+      return res.status(404).json({ message: 'Event not found or you are not a participant' });
     }
 
     if (!req.files || (req.files as Express.Multer.File[]).length === 0) {
@@ -238,5 +238,45 @@ export const handleAICallback = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('[AICallback] Critical Callback Processing Error:', error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+export const getMyPhotos = async (req: AuthRequest, res: Response) => {
+  try {
+    const { eventId } = req.params;
+    const faceId = req.user.faceId;
+    
+    if (!faceId) {
+      return res.status(400).json({ message: 'You have not registered your face yet. Please upload a profile photo first.' });
+    }
+
+    const numericFaceId = parseInt(req.user._id.toString().substring(0, 8), 16);
+    
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    const aiServiceUrl = process.env.AI_SERVICE_URL!;
+    const response = await axios.post(`${aiServiceUrl}/find-user-matches`, {
+      face_id: numericFaceId,
+      event_id: eventId
+    });
+
+    const detectionMatches = response.data.matches || [];
+
+    // Extract detection IDs from the response
+    const detectionIds = detectionMatches.map((match: any) => match.detection_id);
+
+    // Fetch full media objects that contain matching detections
+    const matchingMedia = await Media.find({ 
+      eventId: eventId,
+      detections: { $elemMatch: { detection_id: { $in: detectionIds } } }
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json(matchingMedia);
+  } catch (error) {
+    console.error('[GetMyPhotos] Error:', error);
+    res.status(500).json({ message: 'Failed to find your photos. Please try again later.' });
   }
 };

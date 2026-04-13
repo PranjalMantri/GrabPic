@@ -7,7 +7,8 @@ import {
   deleteEvent, 
   uploadEventMedia,
   joinEvent,
-  handleAICallback
+  handleAICallback,
+  getMyPhotos
 } from '../controller/event.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { upload } from '../middleware/upload';
@@ -29,5 +30,7 @@ router.delete('/:id', deleteEvent);
 router.post('/:id/join', joinEvent);
 
 router.post('/:id/media', upload.array('media', 25), uploadEventMedia);
+
+router.get('/:eventId/my-photos', getMyPhotos);
 
 export default router;
