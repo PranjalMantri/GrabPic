@@ -1,14 +1,24 @@
 import cv2
 import numpy as np
 import os
+import logging
 import tempfile
 from insightface.app import FaceAnalysis
 from app.schema.schemas import AIProcessingResult, FaceMetaData
 
+logger = logging.getLogger(__name__)
+
 class AIEngine:
     def __init__(self):
-        self.app = FaceAnalysis("buffalo_l", providers=["CPUExecutionProvider"])
+        model_name = os.getenv("MODEL_NAME", "buffalo_l")
+        
+        # Try GPU first, fall back to CPU
+        providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
+        
+        self.app = FaceAnalysis(name=model_name, providers=providers)
         self.app.prepare(ctx_id=0, det_size=(640, 640))
+        
+        logger.info("AIEngine initialized: model=%s", model_name)
 
     def _get_lighting_level(self, img_gray):
         return np.mean(img_gray)
