@@ -1,1 +1,2 @@
-export { AuthenticatedHomePage } from "./authenticated-homepage";
+export {AuthenticatedHomePage} from "./authenticated-homepage"
+export { AuthenticatedNavbar } from "./authenticated-navbar";
