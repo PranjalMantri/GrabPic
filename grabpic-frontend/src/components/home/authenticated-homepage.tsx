@@ -1,4 +1,4 @@
-import { CalendarDays, Play } from "lucide-react";
+import { Camera, CalendarDays, Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -79,7 +79,7 @@ export function AuthenticatedHomePage() {
       <AuthenticatedNavbar activeTab="Events" />
 
       <main className="mx-auto w-full max-w-6xl space-y-8 px-5 py-8">
-        <section className="flex flex-col items-start gap-4 text-left">
+        <section className="flex flex-col items-start justify-between gap-5 text-left lg:flex-row lg:items-end">
           <div className="space-y-2">
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-(--color-primary)">
               Dashboard
@@ -91,6 +91,14 @@ export function AuthenticatedHomePage() {
               Track active events, review curated highlights, and jump into your latest AI-assisted galleries.
             </p>
           </div>
+
+          <Link
+            href="/events/create"
+            className="inline-flex h-11 items-center gap-2 rounded-[10px] bg-(--color-primary) px-5 text-sm font-semibold text-white shadow-(--shadow-primary) transition hover:bg-(--color-primary-dark)"
+          >
+            <Camera size={16} color="white" />
+            <span className="text-white">Create Event</span>
+          </Link>
         </section>
 
         <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
