@@ -54,9 +54,9 @@ const defaultNotifications: NavbarNotification[] = [
 ];
 
 const tabs: Array<{ label: NavbarTab; href: string }> = [
-  { label: "Events", href: "#" },
-  { label: "Gallery", href: "#" },
-  { label: "Settings", href: "#" },
+  { label: "Events", href: "/" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Settings", href: "/settings" },
 ];
 
 export function AuthenticatedNavbar({
@@ -105,8 +105,8 @@ export function AuthenticatedNavbar({
   }
 
   return (
-    <header className="sticky top-0 z-20 border-b border-(--color-border)hite/95 backdrop-blur-md">
-      <div className="mx-auto flex h-16 w-full max-w-310 items-center justify-between px-5">
+    <header className="sticky top-0 z-20 border-b border-(--color-border) bg-white/92 backdrop-blur-xl">
+      <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-5">
         <div className="flex items-center gap-8">
           <Link className="flex items-center gap-3" href="/">
             <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[linear-gradient(135deg,#6b5fef_0%,#5b4fe8_100%)] text-white shadow-(--shadow-primary)">
@@ -119,7 +119,7 @@ export function AuthenticatedNavbar({
 
           <nav className="flex items-center gap-2 text-sm font-medium text-(--color-text-secondary)">
             {tabs.map((tab) => (
-              <a
+              <Link
                 key={tab.label}
                 href={tab.href}
                 className={
@@ -129,7 +129,7 @@ export function AuthenticatedNavbar({
                 }
               >
                 {tab.label}
-              </a>
+              </Link>
             ))}
           </nav>
         </div>
@@ -174,7 +174,7 @@ export function AuthenticatedNavbar({
                 {notifications.map((item) => (
                   <div
                     key={item.id}
-                    className="rounded-xl border border-transparent px-3 py-2 transition hover:border-(--color-border)r:bg-[#f7f8fc]"
+                    className="rounded-xl border border-transparent px-3 py-2 transition hover:border-(--color-border) hover:bg-[#f7f8fc]"
                   >
                     <p className="text-[13px] font-semibold text-(--color-text-primary)">
                       {item.title}
@@ -200,13 +200,13 @@ export function AuthenticatedNavbar({
               </div>
 
               <div className="mt-2 space-y-1">
-                <button
-                  type="button"
-                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-(--color-text-secondary) transition hover:bg-[#f4f6fb]"
+                <Link
+                  href="/settings"
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-(--color-text-secondary) transition hover:bg-[#f4f6fb]"
                 >
                   <Settings size={16} />
                   Account Settings
-                </button>
+                </Link>
                 <button
                   type="button"
                   onClick={handleLogout}

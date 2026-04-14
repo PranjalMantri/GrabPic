@@ -78,12 +78,18 @@ export function AuthenticatedHomePage() {
     <div className="min-h-screen bg-(--color-bg-base)">
       <AuthenticatedNavbar activeTab="Events" />
 
-      <main className="mx-auto w-full max-w-310e-y-8 px-5 py-8">
-        <section className="flex flex-wrap items-center justify-between gap-4">
-          <div>
+      <main className="mx-auto w-full max-w-6xl space-y-8 px-5 py-8">
+        <section className="flex flex-col items-start gap-4 text-left">
+          <div className="space-y-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-(--color-primary)">
+              Dashboard
+            </p>
             <h1 className="text-[42px] font-bold leading-tight tracking-[-0.03em] text-(--color-text-primary)">
               Welcome back, Alex.
             </h1>
+            <p className="max-w-2xl text-[15px] leading-7 text-(--color-text-secondary)">
+              Track active events, review curated highlights, and jump into your latest AI-assisted galleries.
+            </p>
           </div>
         </section>
 
