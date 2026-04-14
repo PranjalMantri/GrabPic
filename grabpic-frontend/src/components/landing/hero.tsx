@@ -1,5 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ArrowRight, Sparkles } from "lucide-react";
+import Link from "next/link";
 
 const collageImages = [
   "https://lh3.googleusercontent.com/aida-public/AB6AXuDpAsQlkbJZfZdIi_fe-ZhDS06G6fM-40RsBNS2QFtAHavqn-ydt0SnnbW2O9RU1gSJiZ9F1w7UMS-YcSkLzhC9KKDRcCv50Liz9IpyNt-Zhwgyt6SHyuV-ABaaPrct9uHZSrnmioZXUj8Pk07u0GIEx7_wjGHuqT3nT3Q36niV0fSdS42mJ5LfRt9MktnVGiGH3dkz785cTXyY2erWdqmfZCgt0M_qkjF9V0R_TXL6NRxBM9kwwP1QcaIBVKAI7YcELT4h4JVMEUk",
@@ -12,7 +14,12 @@ export function HeroSection() {
   return (
     <section className="mx-auto mt-12 grid w-full max-w-6xl items-center gap-10 lg:grid-cols-[1.03fr_1fr]">
       <div className="hero-copy fade-in-up">
-        <Badge className="mb-6 w-fit">AI-Powered Event Photography</Badge>
+        <Badge className="mb-6 flex w-fit items-center gap-2 border border-[var(--color-border)] bg-[var(--color-primary-subtle)] px-3 py-1.5 text-[var(--color-primary)] shadow-[0_10px_28px_rgba(91,79,232,0.12)]">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/80 text-[var(--color-primary)]">
+            <Sparkles size={12} />
+          </span>
+          <span>AI-Powered Event Photography</span>
+        </Badge>
         <h1 className="text-5xl font-extrabold leading-[1.05] tracking-[-0.02em] text-[var(--color-text-primary)] md:text-6xl">
           Find your photos
           <span className="block text-[var(--color-primary)]">instantly</span>
@@ -21,8 +28,11 @@ export function HeroSection() {
           Stop scrolling through thousands of event photos. Our advanced face-recognition AI
           finds every shot of you and your friends in seconds.
         </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Button size="lg">Get Started</Button>
+        <div className="mt-8 flex flex-wrap gap-3 text-white">
+          <Link href="/register" className={buttonVariants({ size: "lg", className: "text-white" })}>
+            Get Started
+            <ArrowRight size={16} />
+          </Link>
           <Button variant="secondary" size="lg">
             Try Demo
           </Button>

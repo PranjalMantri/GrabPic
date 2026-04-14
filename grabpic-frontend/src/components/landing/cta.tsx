@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 
 export function CTASection() {
   return (
@@ -14,7 +15,9 @@ export function CTASection() {
         </p>
 
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-          <Button size="lg">Create Account</Button>
+          <Link href="/register" className={buttonVariants({ size: "lg" })}>
+            Create Account
+          </Link>
         </div>
       </div>
     </section>
