@@ -1,11 +1,13 @@
 import { CalendarDays, Play } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 import { AuthenticatedNavbar } from "@/components/home/authenticated-navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 type EventCardData = {
+  slug: string;
   title: string;
   date: string;
   photos: string;
@@ -15,6 +17,7 @@ type EventCardData = {
 
 const featuredEvents: EventCardData[] = [
   {
+    slug: "global-tech-summit-2024",
     title: "Global Tech Summit 2024",
     date: "Oct 24, 2024",
     photos: "1,248",
@@ -22,6 +25,7 @@ const featuredEvents: EventCardData[] = [
     background: "linear-gradient(140deg, #0f2f5a 0%, #1f5f97 45%, #3d89c7 100%)",
   },
   {
+    slug: "miller-wedding",
     title: "Miller Wedding",
     date: "Nov 02, 2024",
     photos: "842",
@@ -30,37 +34,42 @@ const featuredEvents: EventCardData[] = [
   },
 ];
 
-function EventCard({ title, date, photos, badge, background }: EventCardData) {
+function EventCard({ slug, title, date, photos, badge, background }: EventCardData) {
   return (
-    <article className="space-y-3">
-      <div
-        className="relative aspect-16/10 overflow-hidden rounded-2xl border border-[#d8dcec] p-4 text-white shadow-[0_14px_30px_-20px_rgba(12,16,26,0.9)]"
-        style={{ background }}
-      >
-        {badge ? (
-          <span className="inline-flex rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#26314f]">
-            {badge}
-          </span>
-        ) : null}
-      </div>
-      <div className="space-y-1">
-        <div className="flex items-baseline justify-between gap-3">
-          <h3 className="line-clamp-1 text-[26px] font-semibold leading-tight tracking-[-0.02em] text-(--color-text-primary)">
-            {title}
-          </h3>
-          <p className="text-sm font-bold text-(--color-text-primary)">{photos}</p>
+    <Link
+      href={`/events/${slug}`}
+      className="group block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--color-primary)"
+    >
+      <article className="space-y-3">
+        <div
+          className="relative aspect-16/10 overflow-hidden rounded-2xl border border-[#d8dcec] p-4 text-white shadow-[0_14px_30px_-20px_rgba(12,16,26,0.9)] transition-transform duration-200 group-hover:scale-[1.01]"
+          style={{ background }}
+        >
+          {badge ? (
+            <span className="inline-flex rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#26314f]">
+              {badge}
+            </span>
+          ) : null}
         </div>
-        <div className="flex items-center justify-between text-[13px] text-(--color-text-secondary)">
-          <span className="inline-flex items-center gap-1.5">
-            <CalendarDays size={14} />
-            {date}
-          </span>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-(--color-text-tertiary)">
-            Photos
-          </span>
+        <div className="space-y-1">
+          <div className="flex items-baseline justify-between gap-3">
+            <h3 className="line-clamp-1 text-[26px] font-semibold leading-tight tracking-[-0.02em] text-(--color-text-primary)">
+              {title}
+            </h3>
+            <p className="text-sm font-bold text-(--color-text-primary)">{photos}</p>
+          </div>
+          <div className="flex items-center justify-between text-[13px] text-(--color-text-secondary)">
+            <span className="inline-flex items-center gap-1.5">
+              <CalendarDays size={14} />
+              {date}
+            </span>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-(--color-text-tertiary)">
+              Photos
+            </span>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </Link>
   );
 }
 

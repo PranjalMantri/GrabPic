@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720" role="img" aria-label="Event crowd">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#061127"/>
+      <stop offset="100%" stop-color="#0b1f3f"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="720" fill="url(#g1)"/>
+  <circle cx="480" cy="540" r="120" fill="#f9a13f" opacity="0.85"/>
+  <rect y="560" width="960" height="160" fill="#040915"/>
+  <text x="40" y="80" fill="#9dc4ff" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="700">SUMMIT CROWD</text>
+</svg>
