@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 import { Button } from "@/components/ui/button";
+import { createMockSession } from "@/lib/auth";
 import { AuthFormField } from "./auth-form-field";
 import { AuthShell } from "./auth-shell";
 import { type RegisterFormErrors, type RegisterFormValues, validateRegister } from "./validation";
@@ -13,6 +15,7 @@ const initialValues: RegisterFormValues = {
 };
 
 export function RegisterForm() {
+  const router = useRouter();
   const [values, setValues] = useState<RegisterFormValues>(initialValues);
   const [errors, setErrors] = useState<RegisterFormErrors>({});
   const [submitted, setSubmitted] = useState(false);
@@ -32,7 +35,13 @@ export function RegisterForm() {
 
     const nextErrors = validateRegister(values);
     setErrors(nextErrors);
-    setSubmitted(Object.keys(nextErrors).length === 0);
+    const isValid = Object.keys(nextErrors).length === 0;
+    setSubmitted(isValid);
+
+    if (isValid) {
+      createMockSession();
+      void router.push("/");
+    }
   }
 
   return (

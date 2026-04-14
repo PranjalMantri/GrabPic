@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 import { Button } from "@/components/ui/button";
+import { createMockSession } from "@/lib/auth";
 import { AuthFormField } from "./auth-form-field";
 import { AuthShell } from "./auth-shell";
 import { type LoginFormErrors, type LoginFormValues, validateLogin } from "./validation";
@@ -12,6 +14,7 @@ const initialValues: LoginFormValues = {
 };
 
 export function LoginForm() {
+  const router = useRouter();
   const [values, setValues] = useState<LoginFormValues>(initialValues);
   const [errors, setErrors] = useState<LoginFormErrors>({});
   const [submitted, setSubmitted] = useState(false);
@@ -31,7 +34,13 @@ export function LoginForm() {
 
     const nextErrors = validateLogin(values);
     setErrors(nextErrors);
-    setSubmitted(Object.keys(nextErrors).length === 0);
+    const isValid = Object.keys(nextErrors).length === 0;
+    setSubmitted(isValid);
+
+    if (isValid) {
+      createMockSession();
+      void router.push("/");
+    }
   }
 
   return (
