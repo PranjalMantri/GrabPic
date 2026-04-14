@@ -59,6 +59,10 @@ export default function SettingsPage() {
     setFormValues((current) => ({ ...current, [field]: value }));
   }
 
+  function handleUpdateFace() {
+    void router.push("/settings/update-face");
+  }
+
   return (
     <>
       <Head>
@@ -184,7 +188,7 @@ export default function SettingsPage() {
                     This face profile helps find you automatically in large event galleries.
                   </p>
 
-                  <Button className="mt-5 w-full" type="button">
+                  <Button className="mt-5 w-full" type="button" onClick={handleUpdateFace}>
                     Update Face
                   </Button>
 
