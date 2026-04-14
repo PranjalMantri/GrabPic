@@ -1,9 +1,31 @@
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { Camera, CircleAlert, Flashlight, Upload, X } from "lucide-react";
+import { Camera, CircleAlert, Flashlight, LoaderCircle, Upload, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+
+const tokenKeys = ["grabpic_token", "grabpic-token", "token", "authToken"];
+
+function readAccessToken() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  for (const key of tokenKeys) {
+    const storedToken = window.localStorage.getItem(key);
+    if (storedToken && storedToken.trim().length > 0) {
+      return storedToken;
+    }
+
+    const match = document.cookie.match(new RegExp(`(?:^|; )${key}=([^;]*)`));
+    if (match?.[1]) {
+      return decodeURIComponent(match[1]);
+    }
+  }
+
+  return null;
+}
 
 export default function UpdateFacePage() {
   const router = useRouter();
@@ -11,9 +33,12 @@ export default function UpdateFacePage() {
   const streamRef = useRef<MediaStream | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewUrlRef = useRef<string | null>(null);
+  const selectedFileRef = useRef<File | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [galleryPreviewUrl, setGalleryPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
 
   function handleClose() {
     void router.push("/settings");
@@ -29,7 +54,28 @@ export default function UpdateFacePage() {
       previewUrlRef.current = null;
     }
 
+    selectedFileRef.current = null;
     setGalleryPreviewUrl(null);
+  }
+
+  function setPreviewFile(nextFile: File) {
+    clearGalleryPreview();
+    selectedFileRef.current = nextFile;
+
+    const nextPreviewUrl = URL.createObjectURL(nextFile);
+    previewUrlRef.current = nextPreviewUrl;
+    setGalleryPreviewUrl(nextPreviewUrl);
+  }
+
+  function stopCamera() {
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+    setIsCameraReady(false);
   }
 
   async function startCamera() {
@@ -40,6 +86,7 @@ export default function UpdateFacePage() {
 
     try {
       setCameraError(null);
+      setUploadStatus(null);
 
       if (!streamRef.current) {
         streamRef.current = await navigator.mediaDevices.getUserMedia({
@@ -60,17 +107,6 @@ export default function UpdateFacePage() {
     }
   }
 
-  function stopCamera() {
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-    streamRef.current = null;
-
-    if (videoRef.current) {
-      videoRef.current.srcObject = null;
-    }
-
-    setIsCameraReady(false);
-  }
-
   function handleCameraClick() {
     if (isCameraReady) {
       stopCamera();
@@ -80,6 +116,90 @@ export default function UpdateFacePage() {
     void startCamera();
   }
 
+  function handleCaptureClick() {
+    if (!isCameraReady || !videoRef.current) {
+      setCameraError("Open the camera first, then take the photo.");
+      return;
+    }
+
+    const video = videoRef.current;
+
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+      setCameraError("Camera is still loading. Try again in a moment.");
+      return;
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      setCameraError("Unable to capture the current photo.");
+      return;
+    }
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        setCameraError("Unable to capture the current photo.");
+        return;
+      }
+
+      const nextFile = new File([blob], `face-capture-${Date.now()}.jpg`, {
+        type: "image/jpeg",
+      });
+
+      setPreviewFile(nextFile);
+      stopCamera();
+    }, "image/jpeg", 0.92);
+  }
+
+  async function handleProceedUpload() {
+    const selectedFile = selectedFileRef.current;
+
+    if (!selectedFile) {
+      setCameraError("Choose or capture a face photo first.");
+      return;
+    }
+
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim().replace(/\/$/, "");
+    const endpoint = apiBaseUrl ? `${apiBaseUrl}/api/users/register-face` : "/api/users/register-face";
+    const accessToken = readAccessToken();
+
+    const payload = new FormData();
+    payload.append("image", selectedFile);
+
+    try {
+      setIsUploading(true);
+      setCameraError(null);
+      setUploadStatus("Uploading your face photo...");
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+        body: payload,
+      });
+
+      const responseData = (await response.json().catch(() => null)) as { message?: string } | null;
+
+      if (!response.ok) {
+        throw new Error(responseData?.message || `Request failed with status ${response.status}`);
+      }
+
+      setUploadStatus("Face photo uploaded successfully.");
+      clearGalleryPreview();
+      await router.push("/settings");
+    } catch (error) {
+      setUploadStatus(null);
+      setCameraError(error instanceof Error ? error.message : "Failed to upload the photo.");
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
   useEffect(() => {
     return () => {
       stopCamera();
@@ -87,7 +207,7 @@ export default function UpdateFacePage() {
     };
   }, []);
 
-  function handleUploadChange(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleUploadChange(event: ChangeEvent<HTMLInputElement>) {
     const selectedFile = event.target.files?.[0];
 
     if (!selectedFile) {
@@ -95,13 +215,9 @@ export default function UpdateFacePage() {
     }
 
     stopCamera();
-    clearGalleryPreview();
-
-    const nextPreviewUrl = URL.createObjectURL(selectedFile);
-    previewUrlRef.current = nextPreviewUrl;
-    setGalleryPreviewUrl(nextPreviewUrl);
-
-    // Placeholder: future upload flow hooks into face processing service.
+    setUploadStatus(null);
+    setCameraError(null);
+    setPreviewFile(selectedFile);
     event.target.value = "";
   }
 
@@ -148,11 +264,7 @@ export default function UpdateFacePage() {
 
                 <div className="relative mx-auto mt-3 h-63.75 w-63.75 overflow-hidden rounded-full border border-[#e8dfcf]/35 bg-[radial-gradient(circle_at_50%_26%,#d8d2c6_0%,#cbbba2_50%,#8f745b_88%)] shadow-[inset_0_-28px_36px_rgba(0,0,0,0.28)] sm:h-71.25 sm:w-71.25">
                   {galleryPreviewUrl ? (
-                    <img
-                      src={galleryPreviewUrl}
-                      alt="Selected face preview"
-                      className="h-full w-full object-cover"
-                    />
+                    <img src={galleryPreviewUrl} alt="Selected face preview" className="h-full w-full object-cover" />
                   ) : null}
 
                   <video
@@ -185,6 +297,7 @@ export default function UpdateFacePage() {
                   <button
                     type="button"
                     aria-label="Capture"
+                    onClick={handleCaptureClick}
                     className="inline-flex h-16 w-16 items-center justify-center rounded-full border-4 border-white/45 bg-white/95 shadow-[0_10px_24px_rgba(0,0,0,0.38)]"
                   >
                     <span className="h-11 w-11 rounded-full border border-[#d4d6dd]" />
@@ -213,22 +326,18 @@ export default function UpdateFacePage() {
                 ) : (
                   <p className="mt-3 text-[12px] text-white/70">
                     {galleryPreviewUrl
-                      ? "Preview loaded from gallery. You can replace it or open the camera."
+                      ? "Preview loaded from gallery. Proceed to upload when ready."
                       : isCameraReady
                       ? "Camera is active. Position your face inside the circle."
                       : "Tap Open Camera to request webcam access."}
                   </p>
                 )}
+
+                {uploadStatus ? <p className="mt-2 text-[12px] font-medium text-white/85">{uploadStatus}</p> : null}
               </div>
             </div>
 
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleUploadChange}
-            />
+            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleUploadChange} />
 
             <Button
               type="button"
@@ -239,6 +348,18 @@ export default function UpdateFacePage() {
               <Upload size={16} />
               Upload from Gallery
             </Button>
+
+            {galleryPreviewUrl ? (
+              <Button
+                type="button"
+                className="mt-3 h-12 w-full rounded-xl"
+                onClick={handleProceedUpload}
+                disabled={isUploading}
+              >
+                {isUploading ? <LoaderCircle size={16} className="animate-spin" /> : null}
+                {isUploading ? "Uploading..." : "Proceed and Upload Photo"}
+              </Button>
+            ) : null}
 
             <p className="mt-8 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#3c4150]">
               Secure &amp; Private
