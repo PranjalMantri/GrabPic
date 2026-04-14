@@ -45,7 +45,7 @@ function EventCard({ title, date, photos, badge, background }: EventCardData) {
       </div>
       <div className="space-y-1">
         <div className="flex items-baseline justify-between gap-3">
-          <h3 className="line-clamp-1 text-[26px] font-semibold leading-tight tracking-[-0.02em] text-[var(--color-text-primary)]">
+          <h3 className="line-clamp-1 text-[26px] font-semibold leading-tight tracking-[-0.02em] text-(--color-text-primary)">
             {title}
           </h3>
           <p className="text-sm font-bold text-(--color-text-primary)">{photos}</p>
@@ -55,7 +55,7 @@ function EventCard({ title, date, photos, badge, background }: EventCardData) {
             <CalendarDays size={14} />
             {date}
           </span>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--color-text-tertiary)]">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-(--color-text-tertiary)">
             Photos
           </span>
         </div>
@@ -66,13 +66,13 @@ function EventCard({ title, date, photos, badge, background }: EventCardData) {
 
 export function AuthenticatedHomePage() {
   return (
-    <div className="min-h-screen bg-[var(--color-bg-base)]">
+    <div className="min-h-screen bg-(--color-bg-base)">
       <AuthenticatedNavbar activeTab="Events" />
 
-      <main className="mx-auto w-full max-w-[1240px] space-y-8 px-5 py-8">
+      <main className="mx-auto w-full max-w-310e-y-8 px-5 py-8">
         <section className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-[42px] font-bold leading-tight tracking-[-0.03em] text-[var(--color-text-primary)]">
+            <h1 className="text-[42px] font-bold leading-tight tracking-[-0.03em] text-(--color-text-primary)">
               Welcome back, Alex.
             </h1>
           </div>
@@ -84,16 +84,16 @@ export function AuthenticatedHomePage() {
           ))}
         </section>
 
-        <Card className="border-none bg-[var(--color-primary-subtle)] shadow-none">
+        <Card className="border-none bg-(--color-primary-subtle) shadow-none">
           <CardContent className="grid gap-6 p-7 lg:grid-cols-[1.5fr_1fr] lg:items-center">
             <div className="space-y-3">
-              <span className="inline-flex rounded-full bg-[#feecc8] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#b45309]">
+              <span className="inline-flex rounded-full bg-[#feecc8] px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-[#b45309]">
                 New Feature
               </span>
-              <h2 className="text-3xl font-bold tracking-[-0.02em] text-[var(--color-text-primary)]">
+              <h2 className="text-3xl font-bold tracking-[-0.02em] text-(--color-text-primary)">
                 Magic Face Recognition
               </h2>
-              <p className="max-w-[56ch] text-[15px] leading-7 text-[var(--color-text-secondary)]">
+              <p className="max-w-[56ch] text-[15px] leading-7 text-(--color-text-secondary)">
                 Guests can find their photos instantly by uploading one selfie. Your album is automatically filtered and ready to share in seconds.
               </p>
               <div className="flex items-center gap-3 pt-1">

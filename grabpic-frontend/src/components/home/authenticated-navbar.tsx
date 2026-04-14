@@ -105,26 +105,26 @@ export function AuthenticatedNavbar({
   }
 
   return (
-    <header className="sticky top-0 z-20 border-b border-[var(--color-border)] bg-white/95 backdrop-blur-md">
-      <div className="mx-auto flex h-16 w-full max-w-[1240px] items-center justify-between px-5">
+    <header className="sticky top-0 z-20 border-b border-(--color-border)hite/95 backdrop-blur-md">
+      <div className="mx-auto flex h-16 w-full max-w-310 items-center justify-between px-5">
         <div className="flex items-center gap-8">
           <Link className="flex items-center gap-3" href="/">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[linear-gradient(135deg,#6b5fef_0%,#5b4fe8_100%)] text-white shadow-[var(--shadow-primary)]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[linear-gradient(135deg,#6b5fef_0%,#5b4fe8_100%)] text-white shadow-(--shadow-primary)">
               <Camera size={18} strokeWidth={2.1} />
             </span>
-            <span className="text-lg font-bold tracking-[-0.02em] text-[var(--color-text-primary)]">
+            <span className="text-lg font-bold tracking-[-0.02em] text-(--color-text-primary)">
               GrabPic
             </span>
           </Link>
 
-          <nav className="flex items-center gap-2 text-sm font-medium text-[var(--color-text-secondary)]">
+          <nav className="flex items-center gap-2 text-sm font-medium text-(--color-text-secondary)">
             {tabs.map((tab) => (
               <a
                 key={tab.label}
                 href={tab.href}
                 className={
                   tab.label === activeTab
-                    ? "rounded-[10px] bg-[var(--color-primary-subtle)] px-3 py-2 text-[var(--color-primary)]"
+                    ? "rounded-[10px] bg-(--color-primary-subtle) px-3 py-2 text-(--color-primary)"
                     : "rounded-[10px] px-3 py-2 hover:bg-[#eef1f8]"
                 }
               >
@@ -139,7 +139,7 @@ export function AuthenticatedNavbar({
             type="button"
             aria-label="Open notifications"
             aria-expanded={isNotificationsOpen}
-            className="icon-btn border border-transparent text-[var(--color-text-secondary)] hover:border-[var(--color-border)]"
+            className="icon-btn border border-transparent text-(--color-text-secondary) hover:border-(--color-border)"
             onClick={() => {
               setIsNotificationsOpen((current) => !current);
               setIsProfileOpen(false);
@@ -152,7 +152,7 @@ export function AuthenticatedNavbar({
             type="button"
             aria-label="Open profile"
             aria-expanded={isProfileOpen}
-            className="icon-btn border border-transparent text-[var(--color-text-secondary)] hover:border-[var(--color-border)]"
+            className="icon-btn border border-transparent text-(--color-text-secondary) hover:border-(--color-border)"
             onClick={() => {
               setIsProfileOpen((current) => !current);
               setIsNotificationsOpen(false);
@@ -162,27 +162,27 @@ export function AuthenticatedNavbar({
           </button>
 
           {isNotificationsOpen ? (
-            <div className="absolute right-12 top-12 z-40 w-[340px] rounded-2xl border border-[var(--color-border)] bg-white p-3 shadow-[0_20px_45px_-24px_rgba(15,15,26,0.4)]">
+            <div className="absolute right-12 top-12 z-40 w-85 rounded-2xl border border-(--color-border) bg-white p-3 shadow-[0_20px_45px_-24px_rgba(15,15,26,0.4)]">
               <div className="flex items-center justify-between px-2 py-1">
-                <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Notifications</h3>
-                <span className="rounded-full bg-[var(--color-primary-subtle)] px-2 py-0.5 text-[11px] font-semibold text-[var(--color-primary)]">
+                <h3 className="text-sm font-semibold text-(--color-text-primary)">Notifications</h3>
+                <span className="rounded-full bg-(--color-primary-subtle) px-2 py-0.5 text-[11px] font-semibold text-(--color-primary)">
                   {notifications.length} new
                 </span>
               </div>
 
-              <div className="mt-2 max-h-[300px] space-y-1 overflow-y-auto pr-1">
+              <div className="mt-2 max-h-75 space-y-1 overflow-y-auto pr-1">
                 {notifications.map((item) => (
                   <div
                     key={item.id}
-                    className="rounded-xl border border-transparent px-3 py-2 transition hover:border-[var(--color-border)] hover:bg-[#f7f8fc]"
+                    className="rounded-xl border border-transparent px-3 py-2 transition hover:border-(--color-border)r:bg-[#f7f8fc]"
                   >
-                    <p className="text-[13px] font-semibold text-[var(--color-text-primary)]">
+                    <p className="text-[13px] font-semibold text-(--color-text-primary)">
                       {item.title}
                     </p>
-                    <p className="mt-0.5 text-xs leading-5 text-[var(--color-text-secondary)]">
+                    <p className="mt-0.5 text-xs leading-5 text-(--color-text-secondary)">
                       {item.message}
                     </p>
-                    <p className="mt-1 text-[11px] text-[var(--color-text-tertiary)]">{item.time}</p>
+                    <p className="mt-1 text-[11px] text-(--color-text-tertiary)">{item.time}</p>
                   </div>
                 ))}
               </div>
@@ -190,11 +190,11 @@ export function AuthenticatedNavbar({
           ) : null}
 
           {isProfileOpen ? (
-            <div className="absolute right-0 top-12 z-40 w-[280px] rounded-2xl border border-[var(--color-border)] bg-white p-3 shadow-[0_20px_45px_-24px_rgba(15,15,26,0.4)]">
-              <div className="rounded-xl bg-[var(--color-primary-subtle)] p-3">
-                <p className="text-[14px] font-semibold text-[var(--color-text-primary)]">{user.name}</p>
-                <p className="mt-1 text-xs text-[var(--color-text-secondary)]">{user.email}</p>
-                <p className="mt-2 text-[11px] uppercase tracking-[0.08em] text-[var(--color-text-tertiary)]">
+            <div className="absolute right-0 top-12 z-40 w-70 rounded-2xl border border-(--color-border) bg-white p-3 shadow-[0_20px_45px_-24px_rgba(15,15,26,0.4)]">
+              <div className="rounded-xl bg-(--color-primary-subtle) p-3">
+                <p className="text-[14px] font-semibold text-(--color-text-primary)">{user.name}</p>
+                <p className="mt-1 text-xs text-(--color-text-secondary)">{user.email}</p>
+                <p className="mt-2 text-[11px] uppercase tracking-[0.08em] text-(--color-text-tertiary)">
                   {user.role}
                 </p>
               </div>
@@ -202,7 +202,7 @@ export function AuthenticatedNavbar({
               <div className="mt-2 space-y-1">
                 <button
                   type="button"
-                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-[var(--color-text-secondary)] transition hover:bg-[#f4f6fb]"
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-(--color-text-secondary) transition hover:bg-[#f4f6fb]"
                 >
                   <Settings size={16} />
                   Account Settings

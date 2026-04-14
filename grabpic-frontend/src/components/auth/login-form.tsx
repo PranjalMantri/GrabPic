@@ -53,13 +53,13 @@ export function LoginForm() {
     >
       <div className="space-y-7">
         <div className="space-y-2">
-          <p className="text-sm font-medium uppercase tracking-[0.12em] text-[var(--color-text-tertiary)]">
+          <p className="text-sm font-medium uppercase tracking-[0.12em] text-(--color-text-tertiary)">
             Sign in
           </p>
-          <h2 className="text-2xl font-bold tracking-[-0.03em] text-[var(--color-text-primary)]">
+          <h2 className="text-2xl font-bold tracking-[-0.03em] text-(--color-text-primary)">
             Access your event workspace
           </h2>
-          <p className="text-sm leading-6 text-[var(--color-text-secondary)]">
+          <p className="text-sm leading-6 text-(--color-text-secondary)">
             Use your registered email and password to continue.
           </p>
         </div>
@@ -74,7 +74,7 @@ export function LoginForm() {
             placeholder="alex@example.com"
             autoComplete="email"
             error={errors.email}
-            rightSlot={<Mail size={14} className="text-[var(--color-text-tertiary)]" />}
+            rightSlot={<Mail size={14} className="text-(--color-text-tertiary)" />}
           />
 
           <AuthFormField
@@ -87,7 +87,7 @@ export function LoginForm() {
             autoComplete="current-password"
             error={errors.password}
             hint="Use the password you created during registration."
-            rightSlot={<Lock size={14} className="text-[var(--color-text-tertiary)]" />}
+            rightSlot={<Lock size={14} className="text-(--color-text-tertiary)" />}
           />
 
           {submitted ? (
@@ -96,7 +96,7 @@ export function LoginForm() {
             </div>
           ) : null}
 
-          <Button className="h-12 w-full rounded-[12px] text-[15px]" type="submit">
+          <Button className="h-12 w-full rounded-xl text-[15px]" type="submit">
             Sign in
             <ArrowRight size={16} />
           </Button>

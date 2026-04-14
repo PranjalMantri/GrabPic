@@ -54,7 +54,7 @@ export function AuthFormField({
           {error}
         </p>
       ) : hint ? (
-        <p id={`${id}-hint`} className="text-sm text-[var(--color-text-tertiary)]">{hint}</p>
+        <p id={`${id}-hint`} className="text-sm text-(--color-text-tertiary)">{hint}</p>
       ) : null}
     </div>
   );

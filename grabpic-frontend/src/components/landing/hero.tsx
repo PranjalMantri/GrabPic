@@ -14,17 +14,17 @@ export function HeroSection() {
   return (
     <section className="mx-auto mt-12 grid w-full max-w-6xl items-center gap-10 lg:grid-cols-[1.03fr_1fr]">
       <div className="hero-copy fade-in-up">
-        <Badge className="mb-6 flex w-fit items-center gap-2 border border-[var(--color-border)] bg-[var(--color-primary-subtle)] px-3 py-1.5 text-[var(--color-primary)] shadow-[0_10px_28px_rgba(91,79,232,0.12)]">
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/80 text-[var(--color-primary)]">
+        <Badge className="mb-6 flex w-fit items-center gap-2 border border-(--color-border) bg-(--color-primary-subtle) px-3 py-1.5 text-(--color-primary) shadow-[0_10px_28px_rgba(91,79,232,0.12)]">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/80 text-(--color-primary)">
             <Sparkles size={12} />
           </span>
           <span>AI-Powered Event Photography</span>
         </Badge>
-        <h1 className="text-5xl font-extrabold leading-[1.05] tracking-[-0.02em] text-[var(--color-text-primary)] md:text-6xl">
+        <h1 className="text-5xl font-extrabold leading-[1.05] tracking-[-0.02em] text-(--color-text-primary) md:text-6xl">
           Find your photos
-          <span className="block text-[var(--color-primary)]">instantly</span>
+          <span className="block text-(--color-primary)">instantly</span>
         </h1>
-        <p className="mt-6 max-w-xl text-base leading-7 text-[var(--color-text-secondary)] md:text-[17px]">
+        <p className="mt-6 max-w-xl text-base leading-7 text-(--color-text-secondary) md:text-[17px]">
           Stop scrolling through thousands of event photos. Our advanced face-recognition AI
           finds every shot of you and your friends in seconds.
         </p>
@@ -42,17 +42,17 @@ export function HeroSection() {
       <div className="collage-card fade-in-up delay-1">
         <div className="mb-4 flex items-start justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--color-text-secondary)]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-(--color-text-secondary)">
               Face Search
             </p>
-            <p className="text-xs text-[var(--color-text-tertiary)]">Scanning 1,240 photos...</p>
+            <p className="text-xs text-(--color-text-tertiary)">Scanning 1,240 photos...</p>
           </div>
-          <div className="h-5 w-5 rounded-full bg-[var(--color-border-subtle)]" />
+          <div className="h-5 w-5 rounded-full bg-(--color-border-subtle)" />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-4">
-            <div className="img-frame aspect-[4/5]">
+            <div className="img-frame aspect-4/5">
               <img
                 src={collageImages[0]}
                 alt="Event moment portrait"
@@ -79,7 +79,7 @@ export function HeroSection() {
                 className="h-full w-full object-cover object-center"
               />
             </div>
-            <div className="img-frame aspect-[4/5]">
+            <div className="img-frame aspect-4/5">
               <img
                 src={collageImages[3]}
                 alt="Event moment stage portrait"
