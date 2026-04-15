@@ -163,6 +163,7 @@ export const uploadEventMedia = async (req: AuthRequest, res: Response) => {
     // Process files one by one to avoid overwhelming AI service and ensure job IDs are captured
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
+      console.log("Uploading file: ", file)
       
       const publicId = `grabpic/events/${id}/${randomUUID()}`;
       
@@ -224,7 +225,7 @@ export const uploadEventMedia = async (req: AuthRequest, res: Response) => {
 
 export const handleAICallback = async (req: Request, res: Response) => {
   try {
-    const { job_id, status, detections, error } = req.body;
+    const { job_id, status, detections, error, face_count, lighting_level, blur_score } = req.body;
     
     if (error) {
       console.error(`[AICallback] Job ${job_id} reported error:`, error);
@@ -237,6 +238,11 @@ export const handleAICallback = async (req: Request, res: Response) => {
     }
 
     media.status = status === 'completed' ? 'completed' : 'failed';
+    media.analysis = {
+      faceCount: Number(face_count) || 0,
+      lightingLevel: Number(lighting_level) || 0,
+      blurScore: Number(blur_score) || 0,
+    };
     
     if (detections) {
       media.detections = detections;
@@ -315,5 +321,86 @@ export const getMyPhotos = async (req: AuthRequest, res: Response) => {
   } catch (error) {
     console.error('[GetMyPhotos] Error:', error);
     res.status(500).json({ message: 'Failed to find your photos. Please try again later.' });
+  }
+};
+
+export const getUserGallery = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user._id;
+    const faceId = req.user.faceId;
+
+    if (!faceId) {
+      return res.status(200).json({
+        media: [],
+        insights: {
+          totalPhotos: 0,
+          bestLighting: 0,
+          groupShots: 0,
+        },
+      });
+    }
+
+    const numericFaceId = parseInt(req.user._id.toString().substring(0, 8), 16);
+
+    // Get all events where the user is a participant
+    const events = await Event.find({ participants: userId });
+
+    if (events.length === 0) {
+      return res.status(200).json({
+        media: [],
+        insights: {
+          totalPhotos: 0,
+          bestLighting: 0,
+          groupShots: 0,
+        },
+      });
+    }
+
+    const allDetectionIds = new Set<any>();
+    const aiServiceUrl = process.env.AI_SERVICE_URL!;
+
+    // Search for user in each event
+    for (const event of events) {
+      try {
+        const response = await axios.post(`${aiServiceUrl}/find-user-matches`, {
+          face_id: numericFaceId,
+          event_id: event._id.toString()
+        });
+
+        const detectionMatches = response.data.matches || [];
+        detectionMatches.forEach((match: any) => allDetectionIds.add(match.detection_id));
+      } catch (error) {
+        console.warn(`[GetUserGallery] Failed to search event ${event._id}:`, error);
+        // Continue with other events
+      }
+    }
+
+    // Fetch all media with matching detections
+    const media = await Media.find({
+      status: 'completed',
+      detections: { $elemMatch: { detection_id: { $in: Array.from(allDetectionIds) } } }
+    })
+      .populate('eventId', 'name coverImage')
+      .sort({ createdAt: -1 });
+
+    const totalPhotos = media.filter((item) => item.type === 'image').length;
+    const bestLighting = media.filter((item) => {
+      return typeof item.analysis?.lightingLevel === 'number' && item.analysis.lightingLevel > 40.0;
+    }).length;
+    const groupShots = media.filter((item) => {
+      return (item.analysis?.faceCount || 0) > 1;
+    }).length;
+
+    res.status(200).json({
+      media,
+      insights: {
+        totalPhotos,
+        bestLighting,
+        groupShots,
+      },
+    });
+  } catch (error) {
+    console.error('[GetUserGallery] Error:', error);
+    res.status(500).json({ message: 'Failed to load gallery' });
   }
 };
