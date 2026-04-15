@@ -16,6 +16,7 @@ type AuthFormFieldProps = {
   hint?: string;
   rightSlot?: ReactNode;
   className?: string;
+  disabled?: boolean;
 };
 
 export function AuthFormField({
@@ -30,6 +31,7 @@ export function AuthFormField({
   hint,
   rightSlot,
   className,
+  disabled = false,
 }: AuthFormFieldProps) {
   return (
     <div className={cn("space-y-2", className)}>
@@ -45,6 +47,7 @@ export function AuthFormField({
         onChange={onChange}
         placeholder={placeholder}
         autoComplete={autoComplete}
+        disabled={disabled}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
       />

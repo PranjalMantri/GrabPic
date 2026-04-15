@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
 import { Button } from "@/components/ui/button";
-import { createMockSession } from "@/lib/auth";
+import { setAccessToken, setRefreshToken } from "@/lib/auth";
+import { apiClient } from "@/lib/api-client";
+import { getSafeNextPath } from "@/lib/navigation";
 import { AuthFormField } from "./auth-form-field";
 import { AuthShell } from "./auth-shell";
 import { type RegisterFormErrors, type RegisterFormValues, validateRegister } from "./validation";
@@ -16,9 +18,16 @@ const initialValues: RegisterFormValues = {
 
 export function RegisterForm() {
   const router = useRouter();
+  const nextPath = getSafeNextPath(router.query.next, "/");
+  const loginHref = useMemo(() => {
+    const encodedNext = encodeURIComponent(nextPath);
+    return `/login?next=${encodedNext}`;
+  }, [nextPath]);
   const [values, setValues] = useState<RegisterFormValues>(initialValues);
   const [errors, setErrors] = useState<RegisterFormErrors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState<string>("");
 
   function updateField(field: keyof RegisterFormValues, value: string) {
     setValues((current) => ({ ...current, [field]: value }));
@@ -28,9 +37,12 @@ export function RegisterForm() {
     if (submitted) {
       setSubmitted(false);
     }
+    if (apiError) {
+      setApiError("");
+    }
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const nextErrors = validateRegister(values);
@@ -38,9 +50,40 @@ export function RegisterForm() {
     const isValid = Object.keys(nextErrors).length === 0;
     setSubmitted(isValid);
 
-    if (isValid) {
-      createMockSession();
-      void router.push("/");
+    if (!isValid) {
+      return;
+    }
+
+    setIsLoading(true);
+    setApiError("");
+
+    try {
+      const [data, response] = await apiClient.post("/auth/register", {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      }, { skipAuth: true });
+
+      if (response.status !== 201 || !data) {
+        setApiError(response.error || "Registration failed. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Store tokens
+      setAccessToken(data.accessToken);
+      setRefreshToken(data.refreshToken);
+
+      if (data.user?.face_registered) {
+        void router.push(nextPath);
+      } else {
+        const encodedNext = encodeURIComponent(nextPath);
+        void router.push(`/settings/register-face?next=${encodedNext}`);
+      }
+    } catch (error) {
+      console.error("[RegisterForm] Submission error:", error);
+      setApiError("An unexpected error occurred. Please try again.");
+      setIsLoading(false);
     }
   }
 
@@ -50,7 +93,7 @@ export function RegisterForm() {
       title="Start curating moments"
       description="Set up your GrabPic account and get ready to organize event memories with AI-backed search."
       footerText="Already have an account?"
-      footerLink={{ label: "Sign in instead", href: "/login" }}
+      footerLink={{ label: "Sign in instead", href: loginHref }}
     >
       <div className="space-y-7">
         <div className="space-y-2">
@@ -102,15 +145,9 @@ export function RegisterForm() {
             rightSlot={<Lock size={14} className="text-(--color-text-tertiary)" />}
           />
 
-          {submitted ? (
-            <div className="rounded-[14px] border border-[#bbf7d0] bg-[#f0fdf4] px-4 py-3 text-sm font-medium text-[#166534]">
-              Validation passed. Wire this form to your registration endpoint next.
-            </div>
-          ) : null}
-
           <Button className="h-12 w-full rounded-xl text-[15px]" type="submit">
-            Create account
-            <ArrowRight size={16} />
+            {isLoading ? "Creating account..." : "Create account"}
+            {!isLoading && <ArrowRight size={16} />}
           </Button>
 
         </form>
