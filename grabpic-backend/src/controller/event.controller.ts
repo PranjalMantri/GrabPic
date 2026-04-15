@@ -4,6 +4,7 @@ import { AuthRequest } from '../middleware/auth.middleware';
 import { Event } from '../models/event.model';
 import { Media } from '../models/media.model';
 import { uploadToCloudinary } from '../utils/cloudinary';
+import { createNotification } from './notification.controller';
 import { randomUUID } from 'crypto';
 
 export const createEvent = async (req: AuthRequest, res: Response) => {
@@ -25,6 +26,15 @@ export const createEvent = async (req: AuthRequest, res: Response) => {
       coverImage: uploadResult.secure_url,
       participants: [owner]
     });
+
+    await createNotification(
+      owner,
+      'event_created',
+      event._id,
+      [],
+      `Event Created: ${name}`,
+      `Your event "${name}" has been created successfully.`
+    );
 
     res.status(201).json(event);
   } catch (error) {
@@ -233,6 +243,33 @@ export const handleAICallback = async (req: Request, res: Response) => {
     }
     
     await media.save();
+
+    // Check if all media uploaded by this user to this event are now completed (or failed)
+    const pendingOrProcessingMedia = await Media.countDocuments({
+      uploadedBy: media.uploadedBy,
+      eventId: media.eventId,
+      status: { $in: ['pending', 'processing'] }
+    });
+
+    // If no more pending/processing media for this user in this event, send notification
+    if (pendingOrProcessingMedia === 0) {
+      const completedMedia = await Media.find({
+        uploadedBy: media.uploadedBy,
+        eventId: media.eventId,
+        status: 'completed'
+      });
+
+      if (completedMedia.length > 0) {
+        await createNotification(
+          media.uploadedBy,
+          'media_processing_complete',
+          media.eventId,
+          completedMedia.map(m => m._id),
+          'Photos Ready',
+          `All ${completedMedia.length} photo(s) have been processed and are ready to view.`
+        );
+      }
+    }
 
     res.status(200).json({ message: 'Callback processed successfully' });
   } catch (error) {
