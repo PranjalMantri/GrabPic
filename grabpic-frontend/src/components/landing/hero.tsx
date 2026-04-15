@@ -12,7 +12,7 @@ const collageImages = [
 
 export function HeroSection() {
   return (
-    <section className="mx-auto mt-12 grid w-full max-w-6xl items-center gap-10 lg:grid-cols-[1.03fr_1fr]">
+    <section id="home" className="mx-auto mt-12 grid w-full max-w-6xl scroll-mt-6 items-center gap-10 lg:grid-cols-[1.03fr_1fr]">
       <div className="hero-copy fade-in-up">
         <Badge className="mb-6 flex w-fit items-center gap-2 border border-(--color-border) bg-(--color-primary-subtle) px-3 py-1.5 text-(--color-primary) shadow-[0_10px_28px_rgba(91,79,232,0.12)]">
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/80 text-(--color-primary)">

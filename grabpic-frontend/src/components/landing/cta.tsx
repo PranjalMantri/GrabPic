@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function CTASection() {
   return (
-    <section className="mx-auto mt-24 w-full max-w-5xl fade-in-up">
+    <section id="get-started" className="mx-auto mt-24 w-full max-w-5xl scroll-mt-6 fade-in-up">
       <div className="relative overflow-hidden rounded-[28px] border border-black/20 bg-[linear-gradient(135deg,#1f2937_0%,#313742_70%)] px-8 py-16 text-center text-white md:px-14">
         <div className="pointer-events-none absolute left-0 top-0 h-40 w-40 rounded-full bg-(--color-primary)/20 blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 right-0 h-40 w-40 rounded-full bg-cyan-400/10 blur-3xl" />

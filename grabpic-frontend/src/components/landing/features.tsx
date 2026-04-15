@@ -11,12 +11,12 @@ const fastRetrievalPreviews = [
 
 export function FeaturesSection() {
   return (
-    <section className="mx-auto mt-28 w-full max-w-6xl">
+    <section id="features" className="mx-auto mt-28 w-full max-w-6xl scroll-mt-6">
       <div className="text-center fade-in-up">
-        <h2 className="text-[38px] font-bold tracking-[-0.01em] text-[var(--color-text-primary)]">
+        <h2 className="text-[38px] font-bold tracking-[-0.01em] text-(--color-text-primary)">
           Engineered for Moments
         </h2>
-        <p className="mt-3 text-sm text-[var(--color-text-tertiary)] md:text-base">
+        <p className="mt-3 text-sm text-(--color-text-tertiary) md:text-base">
           Our platform combines enterprise-grade AI with a curated editorial experience.
         </p>
       </div>
@@ -25,7 +25,7 @@ export function FeaturesSection() {
         <Card className="md:col-span-2">
           <CardContent className="h-full min-h-72">
             <FeatureHeader icon={<Bolt size={14} />} title="Fast Retrieval" />
-            <p className="mt-4 max-w-xl text-sm leading-7 text-[var(--color-text-secondary)]">
+            <p className="mt-4 max-w-xl text-sm leading-7 text-(--color-text-secondary)">
               Our proprietary indexing engine processes thousands of high-resolution images in
               milliseconds, delivering personalized results the moment you upload.
             </p>
@@ -44,7 +44,7 @@ export function FeaturesSection() {
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-[var(--color-primary)] text-white shadow-[var(--shadow-primary)]">
+        <Card className="border-0 bg-(--color-primary) text-white shadow-(--shadow-primary)">
           <CardContent className="min-h-72">
             <FeatureHeader icon={<ShieldCheck size={14} />} title="AI Privacy" dark />
             <p className="mt-4 text-sm leading-7 text-white/80">
@@ -57,7 +57,7 @@ export function FeaturesSection() {
         <Card>
           <CardContent className="min-h-56">
             <FeatureHeader icon={<Users size={14} />} title="Group Sharing" />
-            <p className="mt-4 text-sm leading-7 text-[var(--color-text-secondary)]">
+            <p className="mt-4 text-sm leading-7 text-(--color-text-secondary)">
               Create shared intelligent albums. Tag friends once, and the AI will automatically
               suggest photos they appear in.
             </p>
@@ -68,7 +68,7 @@ export function FeaturesSection() {
           <CardContent className="min-h-56 md:flex md:items-center md:gap-8">
             <div className="flex-1">
               <FeatureHeader icon={<Sparkles size={14} />} title="AI Curator" />
-              <p className="mt-4 text-sm leading-7 text-[var(--color-text-secondary)]">
+              <p className="mt-4 text-sm leading-7 text-(--color-text-secondary)">
                 Our AI does not just find you; it finds the best of you. It automatically filters
                 out blinks, blurs, and poor lighting to highlight your best moments.
               </p>
@@ -103,7 +103,7 @@ function FeatureHeader({
     <div>
       <div
         className={`inline-flex h-8 w-8 items-center justify-center rounded-[10px] ${
-          dark ? "bg-white/20 text-white" : "bg-[var(--color-primary-subtle)] text-[var(--color-primary)]"
+          dark ? "bg-white/20 text-white" : "bg-(--color-primary-subtle) text-(--color-primary)"
         }`}
       >
         {icon}

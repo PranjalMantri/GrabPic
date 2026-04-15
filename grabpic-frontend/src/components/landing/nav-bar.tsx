@@ -1,7 +1,11 @@
 import { Camera } from "lucide-react";
 import Link from "next/link";
 
-const navItems = ["Home", "Gallery", "Events"];
+const navItems = [
+  { label: "Home", href: "#home" },
+  { label: "Features", href: "#features" },
+  { label: "Get Started", href: "#get-started" },
+];
 
 export function NavBar() {
   return (
@@ -18,11 +22,11 @@ export function NavBar() {
       <nav className="flex items-center gap-3 text-sm">
         {navItems.map((item) => (
           <a
-            key={item}
+            key={item.label}
             className="rounded-lg px-3 py-1.5 font-medium text-(--color-text-secondary) transition-all hover:bg-[#e6e8ea] hover:text-(--color-primary)"
-            href="#"
+            href={item.href}
           >
-            {item}
+            {item.label}
           </a>
         ))}
       </nav>
