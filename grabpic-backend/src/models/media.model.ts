@@ -9,6 +9,11 @@ export interface IMedia extends Document {
   eventId: Types.ObjectId;
   status: 'pending' | 'processing' | 'completed' | 'failed';
   jobId?: string;
+  analysis?: {
+    faceCount: number;
+    lightingLevel: number;
+    blurScore: number;
+  };
   detections?: any[];
   createdAt: Date;
 }
@@ -26,6 +31,11 @@ const MediaSchema: Schema = new Schema({
     default: 'pending' 
   },
   jobId: { type: String },
+  analysis: {
+    faceCount: { type: Number, default: 0 },
+    lightingLevel: { type: Number, default: 0 },
+    blurScore: { type: Number, default: 0 },
+  },
   detections: { type: Array, default: [] }
 }, { timestamps: true });
 

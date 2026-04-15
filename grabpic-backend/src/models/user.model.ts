@@ -7,6 +7,7 @@ interface IUser extends Document {
     password?: string
     googleId?: string
     name: string
+    bio?: string
     faceId?: string
     profilePhoto?: string
     faceRegistered: boolean
@@ -19,6 +20,7 @@ const UserSchema: Schema = new Schema({
   password: { type: String }, 
   googleId: { type: String, unique: true, sparse: true },
   name: { type: String, required: true },
+    bio: { type: String, default: "" },
   faceId: { type: String, unique: true, sparse: true }, 
   profilePhoto: { type: String },
   faceRegistered: { type: Boolean, default: false },
