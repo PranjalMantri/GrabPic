@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express"
+import cors from "cors"
 import authRoutes from "./routes/auth.routes"
 import userRoutes from "./routes/user.routes"
 import eventRoutes from "./routes/event.routes"
@@ -7,6 +8,10 @@ import notificationRoutes from "./routes/notification.routes"
 
 const app = express()
 
+app.use(cors({
+    origin: ["http://localhost:3001", "http://127.0.0.1:3001"],
+    credentials: true,
+}))
 app.use(express.json())
 
 app.use("/api/auth", authRoutes)
