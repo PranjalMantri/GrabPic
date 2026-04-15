@@ -4,31 +4,12 @@ import { useRouter } from "next/router";
 import { Camera, CircleAlert, Flashlight, LoaderCircle, Upload, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-
-const tokenKeys = ["grabpic_token", "grabpic-token", "token", "authToken"];
-
-function readAccessToken() {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  for (const key of tokenKeys) {
-    const storedToken = window.localStorage.getItem(key);
-    if (storedToken && storedToken.trim().length > 0) {
-      return storedToken;
-    }
-
-    const match = document.cookie.match(new RegExp(`(?:^|; )${key}=([^;]*)`));
-    if (match?.[1]) {
-      return decodeURIComponent(match[1]);
-    }
-  }
-
-  return null;
-}
+import { apiClient } from "@/lib/api-client";
+import { getSafeNextPath } from "@/lib/navigation";
 
 export default function UpdateFacePage() {
   const router = useRouter();
+  const nextPath = getSafeNextPath(router.query.next, "/");
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -39,8 +20,12 @@ export default function UpdateFacePage() {
   const [galleryPreviewUrl, setGalleryPreviewUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
+  const isUpdateMode = router.query.mode === "update";
 
   function handleClose() {
+    if (!isUpdateMode) {
+      return;
+    }
     void router.push("/settings");
   }
 
@@ -165,10 +150,6 @@ export default function UpdateFacePage() {
       return;
     }
 
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim().replace(/\/$/, "");
-    const endpoint = apiBaseUrl ? `${apiBaseUrl}/api/users/register-face` : "/api/users/register-face";
-    const accessToken = readAccessToken();
-
     const payload = new FormData();
     payload.append("image", selectedFile);
 
@@ -177,21 +158,15 @@ export default function UpdateFacePage() {
       setCameraError(null);
       setUploadStatus("Uploading your face photo...");
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
-        body: payload,
-      });
+      const [, response] = await apiClient.postFormData("/user/register-face", payload);
 
-      const responseData = (await response.json().catch(() => null)) as { message?: string } | null;
-
-      if (!response.ok) {
-        throw new Error(responseData?.message || `Request failed with status ${response.status}`);
+      if (response.status !== 200) {
+        throw new Error(response.error || `Request failed with status ${response.status}`);
       }
 
       setUploadStatus("Face photo uploaded successfully.");
       clearGalleryPreview();
-      await router.push("/settings");
+      await router.push(isUpdateMode ? "/settings" : nextPath);
     } catch (error) {
       setUploadStatus(null);
       setCameraError(error instanceof Error ? error.message : "Failed to upload the photo.");
@@ -235,14 +210,16 @@ export default function UpdateFacePage() {
         <div className="mx-auto max-w-245">
           <div className="mb-6 flex items-center justify-between">
             <p className="text-[26px] font-bold tracking-[-0.02em] text-[#111118]">GrabPic</p>
-            <button
-              type="button"
-              aria-label="Close face registration"
-              onClick={handleClose}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#3f4454] transition hover:bg-black/5"
-            >
-              <X size={18} />
-            </button>
+            {isUpdateMode ? (
+              <button
+                type="button"
+                aria-label="Close face registration"
+                onClick={handleClose}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#3f4454] transition hover:bg-black/5"
+              >
+                <X size={18} />
+              </button>
+            ) : <span className="h-9 w-9" aria-hidden="true" />}
           </div>
 
           <section className="mx-auto w-full max-w-120 text-center">

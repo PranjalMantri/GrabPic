@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 import { type ChangeEvent, type DragEvent, type FormEvent, useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -16,6 +16,8 @@ import { AuthenticatedNavbar } from "@/components/home";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { apiClient } from "@/lib/api-client";
+import { EventItem, getApiErrorMessage } from "@/lib/api-types";
 import { cn } from "@/lib/utils";
 
 type EventFormValues = {
@@ -30,28 +32,7 @@ const initialValues: EventFormValues = {
   description: "",
 };
 
-const tokenKeys = ["grabpic_token", "grabpic-token", "token", "authToken"];
 const draftStorageKey = "grabpic-create-event-draft";
-
-function readAccessToken() {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  for (const key of tokenKeys) {
-    const storedToken = window.localStorage.getItem(key);
-    if (storedToken && storedToken.trim().length > 0) {
-      return storedToken;
-    }
-
-    const match = document.cookie.match(new RegExp(`(?:^|; )${key}=([^;]*)`));
-    if (match?.[1]) {
-      return decodeURIComponent(match[1]);
-    }
-  }
-
-  return null;
-}
 
 export default function CreateEventPage() {
   const router = useRouter();
@@ -151,19 +132,11 @@ export default function CreateEventPage() {
     payload.append("description", values.description.trim());
     payload.append("coverImage", coverImageFile as File);
 
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim().replace(/\/$/, "");
-    const endpoint = apiBaseUrl ? `${apiBaseUrl}/api/events` : "/api/events";
-    const accessToken = readAccessToken();
-
     try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
-        body: payload,
-      });
+      const [data, response] = await apiClient.postFormData<EventItem>("/events", payload);
 
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error(getApiErrorMessage(response.error, `Request failed with status ${response.status}`));
       }
 
       window.localStorage.removeItem(draftStorageKey);
@@ -171,7 +144,15 @@ export default function CreateEventPage() {
       setCoverImageFile(null);
       setErrors({});
       setStatusText("Event created successfully. Upload media next from the event gallery.");
-    } catch {
+
+      if (data?._id) {
+        if (router) {
+          await router.push(`/events/${data._id}`);
+        } else {
+          window.location.assign(`/events/${data._id}`);
+        }
+      }
+    } catch (error) {
       window.localStorage.setItem(
         draftStorageKey,
         JSON.stringify({
@@ -182,7 +163,9 @@ export default function CreateEventPage() {
         }),
       );
 
-      setStatusText("Something went wrong while creating the event");
+      setStatusText(
+        error instanceof Error ? error.message : "Something went wrong while creating the event",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -376,7 +359,18 @@ export default function CreateEventPage() {
               </Card>
 
               <div className="flex flex-col gap-3 border-t border-(--color-border) pt-6 sm:flex-row sm:justify-end">
-                <Button type="button" variant="secondary" onClick={() => router.back()}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    if (router) {
+                      router.back();
+                      return;
+                    }
+
+                    window.history.back();
+                  }}
+                >
                   Cancel
                 </Button>
                 <Button type="submit" disabled={isSubmitting} className="min-w-40">
@@ -426,25 +420,6 @@ export default function CreateEventPage() {
                       <p className="text-sm leading-6 text-(--color-text-secondary)">
                         {values.description.trim() || "Add a short description to help guests and curators understand the event."}
                       </p>
-
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        <div className="rounded-[14px] bg-(--color-primary-subtle) p-4">
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-(--color-primary)">
-                            Name length
-                          </p>
-                          <p className="mt-2 text-lg font-bold text-(--color-text-primary)">
-                            {nameLength > 0 ? nameLength : "0"} chars
-                          </p>
-                        </div>
-                        <div className="rounded-[14px] bg-[#f8f9fc] p-4">
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-(--color-text-tertiary)">
-                            Cover status
-                          </p>
-                          <p className="mt-2 text-lg font-bold text-(--color-text-primary)">
-                            {coverImageFile ? "Selected" : "Missing"}
-                          </p>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </CardContent>

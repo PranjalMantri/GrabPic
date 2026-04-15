@@ -1,49 +1,71 @@
 import { Camera, CalendarDays, Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 
 import { AuthenticatedNavbar } from "@/components/home/authenticated-navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { apiClient } from "@/lib/api-client";
+import { EventItem, ProfileResponse, getApiErrorMessage } from "@/lib/api-types";
 
 type EventCardData = {
-  slug: string;
+  id: string;
   title: string;
   date: string;
   photos: string;
   badge: string;
   background: string;
+  coverImage?: string;
 };
 
-const featuredEvents: EventCardData[] = [
-  {
-    slug: "global-tech-summit-2024",
-    title: "Global Tech Summit 2024",
-    date: "Oct 24, 2024",
-    photos: "1,248",
-    badge: "",
-    background: "linear-gradient(140deg, #0f2f5a 0%, #1f5f97 45%, #3d89c7 100%)",
-  },
-  {
-    slug: "miller-wedding",
-    title: "Miller Wedding",
-    date: "Nov 02, 2024",
-    photos: "842",
-    badge: "Featured",
-    background: "linear-gradient(120deg, #2f1c0f 0%, #8f5a2d 52%, #cfab73 100%)",
-  },
+const cardBackgrounds = [
+  "linear-gradient(140deg, #0f2f5a 0%, #1f5f97 45%, #3d89c7 100%)",
+  "linear-gradient(120deg, #2f1c0f 0%, #8f5a2d 52%, #cfab73 100%)",
+  "linear-gradient(120deg, #18382f 0%, #256255 55%, #5ac29d 100%)",
 ];
 
-function EventCard({ slug, title, date, photos, badge, background }: EventCardData) {
+function formatEventDate(rawDate?: string): string {
+  if (!rawDate) {
+    return "Date not set";
+  }
+
+  const parsed = new Date(rawDate);
+  if (Number.isNaN(parsed.valueOf())) {
+    return "Date not set";
+  }
+
+  return parsed.toLocaleDateString(undefined, {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+}
+
+function mapEventToCard(event: EventItem, index: number): EventCardData {
+  const mediaCount = Array.isArray(event.media) ? event.media.length : 0;
+
+  return {
+    id: event._id,
+    title: event.name,
+    date: formatEventDate(event.date),
+    photos: mediaCount.toLocaleString(),
+    badge: index === 0 ? "Recent" : "",
+    background: cardBackgrounds[index % cardBackgrounds.length],
+    coverImage: event.coverImage,
+  };
+}
+
+function EventCard({ id, title, date, photos, badge, background, coverImage }: EventCardData) {
   return (
     <Link
-      href={`/events/${slug}`}
+      href={`/events/${id}`}
       className="group block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--color-primary)"
     >
       <article className="space-y-3">
         <div
           className="relative aspect-16/10 overflow-hidden rounded-2xl border border-[#d8dcec] p-4 text-white shadow-[0_14px_30px_-20px_rgba(12,16,26,0.9)] transition-transform duration-200 group-hover:scale-[1.01]"
-          style={{ background }}
+          style={coverImage ? { backgroundImage: `url(${coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : { background }}
         >
           {badge ? (
             <span className="inline-flex rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#26314f]">
@@ -74,6 +96,65 @@ function EventCard({ slug, title, date, photos, badge, background }: EventCardDa
 }
 
 export function AuthenticatedHomePage() {
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [profile, setProfile] = useState<{ name: string }>({ name: "User" });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProfile = async () => {
+      const [data, response] = await apiClient.get<ProfileResponse>("/user/profile");
+      if (!isMounted || response.status !== 200 || !data?.user) {
+        return;
+      }
+
+      setProfile({
+        name: data.user.name,
+      });
+    };
+
+    void loadProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadEvents = async () => {
+      setIsLoading(true);
+      setErrorMessage(null);
+
+      const [data, response] = await apiClient.get<EventItem[]>("/events");
+
+      if (!isMounted) {
+        return;
+      }
+
+      if (response.status !== 200 || !data) {
+        setErrorMessage(getApiErrorMessage(response.error, "Failed to load events."));
+        setEvents([]);
+        setIsLoading(false);
+        return;
+      }
+
+      setEvents(data);
+      setIsLoading(false);
+    };
+
+    void loadEvents();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const eventCards = useMemo(() => events.map(mapEventToCard), [events]);
+
   return (
     <div className="min-h-screen bg-(--color-bg-base)">
       <AuthenticatedNavbar activeTab="Events" />
@@ -85,7 +166,7 @@ export function AuthenticatedHomePage() {
               Dashboard
             </p>
             <h1 className="text-[42px] font-bold leading-tight tracking-[-0.03em] text-(--color-text-primary)">
-              Welcome back, Alex.
+              Welcome back, {profile.name}.
             </h1>
             <p className="max-w-2xl text-[15px] leading-7 text-(--color-text-secondary)">
               Track active events, review curated highlights, and jump into your latest AI-assisted galleries.
@@ -102,9 +183,51 @@ export function AuthenticatedHomePage() {
         </section>
 
         <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {featuredEvents.map((event) => (
-            <EventCard key={event.title} {...event} />
-          ))}
+          {isLoading
+            ? Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={`event-skeleton-${index}`}
+                  className="h-55 animate-pulse rounded-2xl border border-(--color-border) bg-white"
+                />
+              ))
+            : null}
+
+          {!isLoading && errorMessage ? (
+            <Card className="border-none bg-[#fff4f2] shadow-none md:col-span-2 xl:col-span-3">
+              <CardContent className="flex flex-col gap-3 p-5">
+                <p className="text-sm font-semibold text-[#b42318]">{errorMessage}</p>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => {
+                    window.location.reload();
+                  }}
+                >
+                  Retry
+                </Button>
+              </CardContent>
+            </Card>
+          ) : null}
+
+          {!isLoading && !errorMessage && eventCards.length === 0 ? (
+            <Card className="border-none bg-(--color-primary-subtle) shadow-none md:col-span-2 xl:col-span-3">
+              <CardContent className="space-y-3 p-6">
+                <p className="text-sm font-semibold text-(--color-text-primary)">No events yet.</p>
+                <p className="text-sm text-(--color-text-secondary)">
+                  Create your first event to start uploading and curating photos.
+                </p>
+                <Link href="/events/create" className="inline-flex">
+                  <Button type="button" size="sm">
+                    Create Event
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ) : null}
+
+          {!isLoading && !errorMessage
+            ? eventCards.map((event) => <EventCard key={event.id} {...event} />)
+            : null}
         </section>
 
         <Card className="border-none bg-(--color-primary-subtle) shadow-none">
@@ -131,6 +254,7 @@ export function AuthenticatedHomePage() {
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZY4thA_xv_AkvSAP9osk8num1bz2v8eFJcBAIvexRMEIH3FlPLirDaGI3y-IVt4gfmvKRj0_YwDfR5DNwv-ziHmeCPJlqmTYwL_NpIR-ikz41rT2MEE0OFA-mepDBE8oYdDHw4cQaM80iXu4O1hKEsXAiv77J0YsGNTCPcWULHB3bz6FQzSjJDQc-Xj3VHH4lNUZml5lCidScGXMdBIuOb1aMCl6-B8NeL5VBvQbTq-yq-RcH6ikeUNB5nkPku-tngvVMeoyLKWI"
                 alt="Face recognition"
                 fill
+                sizes="(min-width: 1024px) 33vw, 100vw"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-black/20" />
