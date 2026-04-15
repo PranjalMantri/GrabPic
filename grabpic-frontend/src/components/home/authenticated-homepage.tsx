@@ -243,7 +243,11 @@ export function AuthenticatedHomePage() {
                 Guests can find their photos instantly by uploading one selfie. Your album is automatically filtered and ready to share in seconds.
               </p>
               <div className="flex items-center gap-3 pt-1">
-                <Button type="button" size="sm">
+                <Button 
+                  type="button" 
+                  size="sm"
+                  onClick={() => window.open("https://youtu.be/MtFhxAAMtyc", "_blank")}
+                >
                   Learn More
                 </Button>
               </div>
@@ -261,6 +265,7 @@ export function AuthenticatedHomePage() {
               <button
                 type="button"
                 aria-label="Play Magic Face Recognition demo"
+                onClick={() => window.open("https://youtu.be/MtFhxAAMtyc", "_blank")}
                 className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-white/20 text-white backdrop-blur-sm transition hover:scale-105 hover:bg-white/30"
               >
                 <Play size={20} fill="currentColor" className="ml-0.5" />

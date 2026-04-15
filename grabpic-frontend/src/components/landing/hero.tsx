@@ -33,7 +33,11 @@ export function HeroSection() {
             Get Started
             <ArrowRight size={16} />
           </Link>
-          <Button variant="secondary" size="lg">
+          <Button 
+            variant="secondary" 
+            size="lg"
+            onClick={() => window.open("https://youtu.be/MtFhxAAMtyc", "_blank")}
+          >
             Try Demo
           </Button>
         </div>
