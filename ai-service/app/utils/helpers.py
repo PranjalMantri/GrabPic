@@ -8,10 +8,3 @@ async def download_image(url: str) -> bytes:
             return response.content
             
         raise Exception(f"Failed to download image with url: {url}")
-
-def get_optimized_url(url: str) -> str:
-    """Modifies Cloudinary URL to downscale for faster AI inference."""
-    original_url = str(url)
-    # if "cloudinary.com" in original_url:
-    #     return original_url.replace("/upload/", "/upload/w_1024,c_limit,q_auto/")
-    return original_url

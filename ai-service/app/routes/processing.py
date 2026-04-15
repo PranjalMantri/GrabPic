@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, HttpUrl
 from redis.asyncio import Redis
 
-from app.utils.helpers import download_image, get_optimized_url
+from app.utils.helpers import download_image
 from app.dependencies import get_ai_engine, get_vector_store
 from app.schema.schemas import (
     IndexRequest,
@@ -67,7 +67,7 @@ async def _process_single_job(job: QueueJob) -> ProcessingCallbackPayload:
     ai_engine = get_ai_engine()
     store = get_vector_store()
 
-    optimized_url = get_optimized_url(str(job.source_url))
+    optimized_url = str(job.source_url)
     media_bytes = await download_image(optimized_url)
 
     if job.media_type == "image":
@@ -76,6 +76,12 @@ async def _process_single_job(job: QueueJob) -> ProcessingCallbackPayload:
         result = await asyncio.to_thread(ai_engine.process_video, media_bytes)
 
     detections: list[DetectionResult] = []
+    lighting_level = 0.0
+    blur_score = 0.0
+
+    if result.face_count > 0:
+        lighting_level = float(sum(face.lighting_level for face in result.faces) / result.face_count)
+        blur_score = float(sum(face.blur_score for face in result.faces) / result.face_count)
 
     if result.face_count > 0:
         event_idx, event_path = await asyncio.to_thread(store.get_event_index, job.event_id)
@@ -98,6 +104,9 @@ async def _process_single_job(job: QueueJob) -> ProcessingCallbackPayload:
         media_type=job.media_type,
         source_url=str(job.source_url),
         status="completed",
+        face_count=result.face_count,
+        lighting_level=lighting_level,
+        blur_score=blur_score,
         detections=detections,
     )
 
@@ -127,6 +136,9 @@ async def _queue_worker() -> None:
                     media_type=job.media_type,
                     source_url=str(job.source_url),
                     status="failed",
+                    face_count=0,
+                    lighting_level=0.0,
+                    blur_score=0.0,
                     detections=[],
                     error=str(exc),
                 )

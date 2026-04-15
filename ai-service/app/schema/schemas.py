@@ -65,6 +65,9 @@ class ProcessingCallbackPayload(BaseModel):
     media_type: str
     source_url: str
     status: str
+    face_count: int = 0
+    lighting_level: float = 0.0
+    blur_score: float = 0.0
     detections: List[DetectionResult]
     error: Optional[str] = None
 
